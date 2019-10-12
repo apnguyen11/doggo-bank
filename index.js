@@ -12,9 +12,9 @@ const port = 3000
 app.listen(port, () => console.log('app listening on port ' + port))
 
 // load templates
-const homepageTemplate = fs.readFileSync('./templates/homepage.mustache', 'utf8')
+const homepageTemplate = fs.readFileSync('./templates/homepage.html', 'utf8')
 
-// load the homepage 
+// load the homepage
 app.get('/', (req, res) => {
-    res.send(homepageTemplate)
+  res.send(homepageTemplate)
 })
