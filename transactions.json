@@ -1,0 +1,502 @@
+[
+  {
+    "date": "2019-06-25T11:47:37.331Z",
+    "company": "Wiegand Group",
+    "amount": "326.22"
+  },
+  {
+    "date": "2019-01-26T17:23:14.398Z",
+    "company": "Dare LLC",
+    "amount": "944.62"
+  },
+  {
+    "date": "2019-04-05T18:27:35.770Z",
+    "company": "Waters, Buckridge and Effertz",
+    "amount": "162.16"
+  },
+  {
+    "date": "2018-10-19T16:31:47.335Z",
+    "company": "Kemmer, Jenkins and Nikolaus",
+    "amount": "695.32"
+  },
+  {
+    "date": "2019-02-11T00:55:23.944Z",
+    "company": "Schaefer, Blanda and Schuppe",
+    "amount": "179.42"
+  },
+  {
+    "date": "2019-02-09T20:38:34.486Z",
+    "company": "Predovic Group",
+    "amount": "231.02"
+  },
+  {
+    "date": "2018-11-18T23:08:53.483Z",
+    "company": "Schinner Group",
+    "amount": "864.63"
+  },
+  {
+    "date": "2018-11-05T11:02:26.706Z",
+    "company": "Farrell - Schaefer",
+    "amount": "444.67"
+  },
+  {
+    "date": "2018-11-17T08:42:26.643Z",
+    "company": "Labadie and Sons",
+    "amount": "53.26"
+  },
+  {
+    "date": "2019-04-04T22:04:29.187Z",
+    "company": "Abernathy, Mills and Schumm",
+    "amount": "3.67"
+  },
+  {
+    "date": "2019-10-12T15:07:03.204Z",
+    "company": "Cremin - Braun",
+    "amount": "955.99"
+  },
+  {
+    "date": "2019-05-13T14:48:56.024Z",
+    "company": "Ebert, Schneider and Durgan",
+    "amount": "728.98"
+  },
+  {
+    "date": "2019-03-18T00:50:03.352Z",
+    "company": "Spencer, Carroll and Grant",
+    "amount": "308.03"
+  },
+  {
+    "date": "2018-10-16T11:05:12.032Z",
+    "company": "Hilll - Hills",
+    "amount": "889.10"
+  },
+  {
+    "date": "2019-08-17T04:04:44.088Z",
+    "company": "Rath, Prosacco and Bradtke",
+    "amount": "609.58"
+  },
+  {
+    "date": "2019-03-29T03:05:44.426Z",
+    "company": "Weimann - Daniel",
+    "amount": "657.81"
+  },
+  {
+    "date": "2019-01-17T05:17:16.631Z",
+    "company": "Kutch and Sons",
+    "amount": "71.46"
+  },
+  {
+    "date": "2019-01-09T22:36:45.065Z",
+    "company": "Schulist - Powlowski",
+    "amount": "172.50"
+  },
+  {
+    "date": "2019-02-16T17:06:23.498Z",
+    "company": "Hills - Zulauf",
+    "amount": "84.72"
+  },
+  {
+    "date": "2019-02-21T22:17:14.622Z",
+    "company": "Renner Group",
+    "amount": "237.69"
+  },
+  {
+    "date": "2019-03-29T11:25:56.646Z",
+    "company": "Rempel, Beier and Hettinger",
+    "amount": "959.91"
+  },
+  {
+    "date": "2019-09-26T17:03:10.988Z",
+    "company": "Padberg - Sawayn",
+    "amount": "205.50"
+  },
+  {
+    "date": "2019-06-28T23:16:17.058Z",
+    "company": "Walker - Morar",
+    "amount": "44.93"
+  },
+  {
+    "date": "2019-03-04T06:02:01.552Z",
+    "company": "Zemlak - Murphy",
+    "amount": "126.04"
+  },
+  {
+    "date": "2019-08-01T06:08:51.677Z",
+    "company": "Fahey, Heller and Glover",
+    "amount": "592.96"
+  },
+  {
+    "date": "2018-10-30T18:08:13.478Z",
+    "company": "Wiegand - Johnson",
+    "amount": "752.62"
+  },
+  {
+    "date": "2018-12-02T11:50:39.254Z",
+    "company": "Hoeger LLC",
+    "amount": "647.61"
+  },
+  {
+    "date": "2018-11-18T10:55:33.043Z",
+    "company": "Turcotte - Luettgen",
+    "amount": "646.74"
+  },
+  {
+    "date": "2019-08-14T05:58:55.941Z",
+    "company": "Dooley, Emmerich and Reichel",
+    "amount": "564.10"
+  },
+  {
+    "date": "2018-11-23T11:56:31.428Z",
+    "company": "Brekke, Howell and Cremin",
+    "amount": "69.01"
+  },
+  {
+    "date": "2019-03-02T05:42:05.349Z",
+    "company": "Koch, Cormier and Hintz",
+    "amount": "726.52"
+  },
+  {
+    "date": "2019-03-29T19:30:49.197Z",
+    "company": "O'Reilly and Sons",
+    "amount": "865.35"
+  },
+  {
+    "date": "2018-12-21T08:06:46.819Z",
+    "company": "Will - Bogisich",
+    "amount": "670.40"
+  },
+  {
+    "date": "2019-03-07T14:21:35.802Z",
+    "company": "Boehm LLC",
+    "amount": "633.39"
+  },
+  {
+    "date": "2018-11-29T09:56:56.017Z",
+    "company": "Berge Inc",
+    "amount": "13.32"
+  },
+  {
+    "date": "2019-09-19T17:02:48.391Z",
+    "company": "Ullrich, Farrell and Goldner",
+    "amount": "521.81"
+  },
+  {
+    "date": "2019-01-26T02:14:34.814Z",
+    "company": "Rolfson - Quitzon",
+    "amount": "69.57"
+  },
+  {
+    "date": "2019-01-19T00:36:03.671Z",
+    "company": "Rath, Von and Hodkiewicz",
+    "amount": "98.53"
+  },
+  {
+    "date": "2019-07-10T14:00:43.491Z",
+    "company": "Cremin - Walker",
+    "amount": "126.66"
+  },
+  {
+    "date": "2019-02-22T07:39:30.190Z",
+    "company": "Lockman, Heller and Bogan",
+    "amount": "268.40"
+  },
+  {
+    "date": "2019-08-15T03:44:15.417Z",
+    "company": "Homenick and Sons",
+    "amount": "381.75"
+  },
+  {
+    "date": "2019-04-13T06:51:42.536Z",
+    "company": "Flatley Group",
+    "amount": "768.55"
+  },
+  {
+    "date": "2019-05-07T12:53:28.100Z",
+    "company": "Wisoky - Lang",
+    "amount": "355.21"
+  },
+  {
+    "date": "2019-04-10T20:15:29.296Z",
+    "company": "Klein, Welch and Deckow",
+    "amount": "578.55"
+  },
+  {
+    "date": "2019-05-27T16:23:09.141Z",
+    "company": "Cartwright Group",
+    "amount": "136.47"
+  },
+  {
+    "date": "2018-12-15T15:49:20.916Z",
+    "company": "Douglas - Treutel",
+    "amount": "722.66"
+  },
+  {
+    "date": "2019-01-20T05:07:03.807Z",
+    "company": "Nienow - Huels",
+    "amount": "833.28"
+  },
+  {
+    "date": "2018-12-30T07:02:17.052Z",
+    "company": "Lockman Inc",
+    "amount": "59.84"
+  },
+  {
+    "date": "2018-11-04T05:46:57.438Z",
+    "company": "Morar, Jakubowski and Howe",
+    "amount": "204.15"
+  },
+  {
+    "date": "2018-10-14T04:09:41.400Z",
+    "company": "Pollich - Rowe",
+    "amount": "736.75"
+  },
+  {
+    "date": "2018-11-08T06:50:50.334Z",
+    "company": "Cummings - Smitham",
+    "amount": "461.56"
+  },
+  {
+    "date": "2019-06-04T06:26:22.319Z",
+    "company": "Cormier, Littel and Langworth",
+    "amount": "136.98"
+  },
+  {
+    "date": "2019-09-06T20:09:53.617Z",
+    "company": "Abernathy - Gutkowski",
+    "amount": "101.62"
+  },
+  {
+    "date": "2019-05-21T09:34:48.607Z",
+    "company": "Rippin Inc",
+    "amount": "234.83"
+  },
+  {
+    "date": "2019-05-31T12:27:41.984Z",
+    "company": "Langworth - Lowe",
+    "amount": "745.90"
+  },
+  {
+    "date": "2019-08-13T08:31:25.703Z",
+    "company": "Schroeder LLC",
+    "amount": "413.61"
+  },
+  {
+    "date": "2018-11-22T04:43:52.839Z",
+    "company": "Waelchi, Hessel and Altenwerth",
+    "amount": "623.51"
+  },
+  {
+    "date": "2019-03-19T13:59:34.110Z",
+    "company": "Terry - Ankunding",
+    "amount": "811.46"
+  },
+  {
+    "date": "2019-02-20T13:28:27.449Z",
+    "company": "Zboncak - Goldner",
+    "amount": "200.40"
+  },
+  {
+    "date": "2019-04-15T10:46:05.157Z",
+    "company": "Denesik Group",
+    "amount": "793.84"
+  },
+  {
+    "date": "2018-11-10T19:02:12.279Z",
+    "company": "Anderson, Langosh and Marks",
+    "amount": "8.55"
+  },
+  {
+    "date": "2019-02-23T03:28:48.490Z",
+    "company": "Konopelski, Hamill and Cole",
+    "amount": "309.30"
+  },
+  {
+    "date": "2019-08-01T03:23:41.758Z",
+    "company": "Nienow Group",
+    "amount": "281.27"
+  },
+  {
+    "date": "2019-03-13T07:08:51.439Z",
+    "company": "Purdy LLC",
+    "amount": "91.91"
+  },
+  {
+    "date": "2018-12-15T08:24:13.180Z",
+    "company": "Schmidt, Hills and Effertz",
+    "amount": "557.64"
+  },
+  {
+    "date": "2018-12-07T03:42:11.777Z",
+    "company": "Witting - Sawayn",
+    "amount": "321.63"
+  },
+  {
+    "date": "2019-04-30T05:04:42.559Z",
+    "company": "Treutel - Zulauf",
+    "amount": "135.57"
+  },
+  {
+    "date": "2019-08-21T12:50:47.876Z",
+    "company": "Wolf, Towne and Nolan",
+    "amount": "252.36"
+  },
+  {
+    "date": "2018-10-24T12:57:14.213Z",
+    "company": "Boehm - Crist",
+    "amount": "184.55"
+  },
+  {
+    "date": "2019-03-29T11:01:56.525Z",
+    "company": "Kuhlman Inc",
+    "amount": "199.96"
+  },
+  {
+    "date": "2019-04-04T00:35:08.459Z",
+    "company": "Yost Inc",
+    "amount": "550.08"
+  },
+  {
+    "date": "2018-11-03T22:49:21.988Z",
+    "company": "Witting, Kemmer and Legros",
+    "amount": "707.43"
+  },
+  {
+    "date": "2019-02-18T06:46:58.478Z",
+    "company": "Fritsch Inc",
+    "amount": "107.22"
+  },
+  {
+    "date": "2019-05-18T22:52:20.744Z",
+    "company": "Nikolaus - Mann",
+    "amount": "130.29"
+  },
+  {
+    "date": "2019-03-15T23:12:02.085Z",
+    "company": "Rodriguez - Mills",
+    "amount": "781.22"
+  },
+  {
+    "date": "2019-06-13T13:31:59.849Z",
+    "company": "Nolan and Sons",
+    "amount": "742.99"
+  },
+  {
+    "date": "2018-11-04T11:26:53.771Z",
+    "company": "Hauck and Sons",
+    "amount": "351.78"
+  },
+  {
+    "date": "2019-03-15T12:47:40.191Z",
+    "company": "Bergstrom, Reilly and Rippin",
+    "amount": "241.98"
+  },
+  {
+    "date": "2019-04-08T16:40:22.283Z",
+    "company": "Glover - Anderson",
+    "amount": "479.03"
+  },
+  {
+    "date": "2019-02-17T20:56:16.268Z",
+    "company": "Casper - Hayes",
+    "amount": "788.35"
+  },
+  {
+    "date": "2018-10-13T10:55:17.906Z",
+    "company": "Romaguera, Lind and Herman",
+    "amount": "377.17"
+  },
+  {
+    "date": "2019-01-03T04:54:41.095Z",
+    "company": "Lubowitz and Sons",
+    "amount": "570.84"
+  },
+  {
+    "date": "2019-04-28T05:44:46.465Z",
+    "company": "Gleichner, Bayer and Wilkinson",
+    "amount": "782.30"
+  },
+  {
+    "date": "2018-11-27T19:19:57.441Z",
+    "company": "Becker - D'Amore",
+    "amount": "124.01"
+  },
+  {
+    "date": "2019-08-13T01:23:03.412Z",
+    "company": "Mann Inc",
+    "amount": "102.95"
+  },
+  {
+    "date": "2018-11-28T21:40:03.225Z",
+    "company": "Feil and Sons",
+    "amount": "657.50"
+  },
+  {
+    "date": "2019-08-27T01:03:14.802Z",
+    "company": "Brakus Inc",
+    "amount": "791.23"
+  },
+  {
+    "date": "2018-11-30T15:07:38.187Z",
+    "company": "Adams, Wisozk and Konopelski",
+    "amount": "829.71"
+  },
+  {
+    "date": "2018-11-21T02:31:06.962Z",
+    "company": "Rodriguez and Sons",
+    "amount": "839.46"
+  },
+  {
+    "date": "2019-04-12T04:27:36.497Z",
+    "company": "Hagenes - Wehner",
+    "amount": "196.70"
+  },
+  {
+    "date": "2019-09-29T00:39:51.259Z",
+    "company": "Romaguera LLC",
+    "amount": "302.45"
+  },
+  {
+    "date": "2019-08-16T03:17:10.277Z",
+    "company": "Feest - Hamill",
+    "amount": "292.74"
+  },
+  {
+    "date": "2018-10-30T22:02:23.495Z",
+    "company": "Hauck, Durgan and Hyatt",
+    "amount": "572.59"
+  },
+  {
+    "date": "2019-07-14T23:34:51.233Z",
+    "company": "Spencer, Bednar and Moen",
+    "amount": "850.81"
+  },
+  {
+    "date": "2019-08-01T01:12:15.614Z",
+    "company": "Leuschke - Kilback",
+    "amount": "260.80"
+  },
+  {
+    "date": "2019-03-02T02:47:35.937Z",
+    "company": "Ernser - Nader",
+    "amount": "351.74"
+  },
+  {
+    "date": "2019-02-11T01:35:23.688Z",
+    "company": "Hayes, Davis and Mraz",
+    "amount": "883.49"
+  },
+  {
+    "date": "2019-08-27T15:33:37.698Z",
+    "company": "Senger Group",
+    "amount": "788.65"
+  },
+  {
+    "date": "2019-06-20T03:51:40.188Z",
+    "company": "Romaguera - Brakus",
+    "amount": "375.07"
+  },
+  {
+    "date": "2019-03-26T01:47:09.420Z",
+    "company": "Lind - Hand",
+    "amount": "5.59"
+  }
+]
