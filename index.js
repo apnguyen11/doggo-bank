@@ -5,7 +5,7 @@
 // import { userInfo } from "os";
 
 // import { userInfo } from "os";
-
+//these components should ave been in app.js instead of index.js
 // initialize modules
 require('dotenv').config();
 const mustache = require('mustache');
@@ -15,20 +15,21 @@ const app = express();
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const passport = require('passport');
-const mongoose = require('mongoose');
-const LocalStrategy = require('passport-local').Strategy;
-mongoose.connect('mongodb://localhost/DoggoDatabase');
+var flash = require('connect-flash');
+var request = require('express-session');
+var path = require('path');
 
-// initialize server
-const Schema = mongoose.Schema;
-const UserDetail = new Schema({
-    username: String,
-    password: String
-});
-const UserDetails = mongoose.model('userInfo', UserDetail, 'userInfo');
-app.use(bodyParser.urlencoded({extended: true}));
+// initialize components
+app.use(require('cookie-parser')());
+app.use(require('body-parser').urlencoded({extended: true}));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
+app.use(session({secret: 'keyboard cat'}));
+app.use(bodyParser());
+app.set('view engine', 'pug');
+app.set('view options', {layout: false});
+require('./lib/routes.js')(app);
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log('app listening on port ' + port))
 
@@ -51,14 +52,14 @@ passport.serializeUser(function(user, cb){
     cb(null, user);
 });
 
-// passport.deserializeUser(function(obj, cb){
-//     cb(null, obj);
-// });
-passport.deserializeUser(function(id, cb) {
-    User.findById(id, function(err, user) {
-      cb(err, user);
-    });
-  });
+passport.deserializeUser(function(obj, cb){
+    cb(null, obj);
+});
+// passport.deserializeUser(function(id, cb) {
+//     User.findById(id, function(err, user) {
+//       cb(err, user);
+//     });
+//   });
 
 const FacebookStrategy = require('passport-facebook').Strategy;
 
@@ -86,30 +87,3 @@ app.get('/auth/facebook/callback',
     });
 
 // Passport Local Setup
-passport.use(new LocalStrategy(
-    function(username, password, done) {
-        UserDetails.findOne({
-          username: username
-        }, function(err, user) {
-          if (err) {
-            return done(err);
-          }
-  
-          if (!user) {
-            return done(null, false);
-          }
-  
-          if (user.password != password) {
-            return done(null, false);
-          }
-          return done(null, user);
-        });
-    }
-  ));
-
-  app.post('/',
-  passport.authenticate('local', { failureRedirect: '/error' }),
-  function(req, res) {
-    res.redirect('/homepage');
-  });
-
