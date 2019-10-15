@@ -1,52 +1,62 @@
 [
   {
-    "checking": 91740,
-    "savings": 56179,
-    "balance": "30.00"
+    "checking": 29560,
+    "savings": 41767,
+    "checkingBal": "427.59",
+    "savingsBal": "168.21"
   },
   {
-    "checking": 55987,
-    "savings": 52275,
-    "balance": "232.94"
+    "checking": 12275,
+    "savings": 70013,
+    "checkingBal": "403.99",
+    "savingsBal": "925.21"
   },
   {
-    "checking": 75591,
-    "savings": 59095,
-    "balance": "197.60"
+    "checking": 566,
+    "savings": 49767,
+    "checkingBal": "307.51",
+    "savingsBal": "338.10"
   },
   {
-    "checking": 43433,
-    "savings": 88613,
-    "balance": "470.16"
+    "checking": 27759,
+    "savings": 24875,
+    "checkingBal": "108.06",
+    "savingsBal": "167.23"
   },
   {
-    "checking": 61900,
-    "savings": 50546,
-    "balance": "750.10"
+    "checking": 33569,
+    "savings": 37094,
+    "checkingBal": "646.39",
+    "savingsBal": "276.23"
   },
   {
-    "checking": 34231,
-    "savings": 66373,
-    "balance": "222.83"
+    "checking": 42044,
+    "savings": 7947,
+    "checkingBal": "951.98",
+    "savingsBal": "16.73"
   },
   {
-    "checking": 68511,
-    "savings": 7955,
-    "balance": "818.33"
+    "checking": 33124,
+    "savings": 5274,
+    "checkingBal": "715.78",
+    "savingsBal": "685.92"
   },
   {
-    "checking": 16429,
-    "savings": 79333,
-    "balance": "156.29"
+    "checking": 7796,
+    "savings": 91589,
+    "checkingBal": "471.47",
+    "savingsBal": "728.39"
   },
   {
-    "checking": 39417,
-    "savings": 59582,
-    "balance": "739.98"
+    "checking": 29505,
+    "savings": 12689,
+    "checkingBal": "534.29",
+    "savingsBal": "557.86"
   },
   {
-    "checking": 73604,
-    "savings": 6226,
-    "balance": "447.39"
+    "checking": 22582,
+    "savings": 49189,
+    "checkingBal": "531.20",
+    "savingsBal": "730.65"
   }
 ]
