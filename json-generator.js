@@ -30,7 +30,8 @@ function generateAccounts (numOfAccounts) {
     var account = {}
     account.checking = faker.random.number()
     account.savings = faker.random.number()
-    account.balance = faker.finance.amount()
+    account.checkingBal = faker.finance.amount()
+    account.savingsBal = faker.finance.amount()
     accounts.push(account)
     i++
   }
