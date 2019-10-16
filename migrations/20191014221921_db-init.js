@@ -22,11 +22,24 @@ exports.up = function (knex) {
         table.foreign('userId').references('id').inTable('Users')
       })
     })
+    .then(() => {
+      return knex.schema.createTable('Transactions', (table) => {
+        table.increments('id')
+        table.date('timestamp')
+        table.string('company')
+        table.float('amount')
+        table.integer('accountId')
+        table.foreign('accountId').references('id').inTable('Accounts')
+      })
+    })
 }
 
 exports.down = function (knex) {
-  return knex.schema.dropTable('Users')
+  return knex.schema.dropTable('Transactions')
     .then(() => {
       return knex.schema.dropTable('Accounts')
+    })
+    .then(() => {
+      return knex.schema.dropTable('Users')
     })
 }
