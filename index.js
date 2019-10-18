@@ -21,7 +21,6 @@ const LocalStrategy = require('passport-local').Strategy;
 
 const environment = process.env.NODE_ENV || 'development';
 const dbConfigs = require('./knexfile.js');
-const knex = require('knex')('development');
 const db = require('knex')(dbConfigs.development)
 
 var createError = require('http-errors');
@@ -66,9 +65,6 @@ function createLogin(req, res, next){
 app.get('/createLogin', createLogin)
 
 
-// passport.deserializeUser(function(obj, cb){
-//     cb(null, obj);
-// });
 passport.deserializeUser(function(id, cb) {
     User.findById(id, function(err, user) {
       cb(err, user);
@@ -90,12 +86,9 @@ passport.use(new FacebookStrategy({
     callbackURL: '/auth/facebook/callback',
     profileFields: ['id', 'displayName', 'name', 'gender', 'profileUrl', 'emails', 'photos']
 }, function(accessToken, refreshToken, profile, cb){
-    // console.log(profile, '-----------------')
     findUser('Pete47@gmail.com')
     .then(function(results){
-        // console.log(results.rows)
         if(results.rows.length !== 0){
-            // console.log('user exists')
             throw null
             return result
         } else {
@@ -114,10 +107,7 @@ function findUser(email) {
   
 };
 
-// function createUser(user){
-//     return db.raw('INSERT INTO Users (firstName, lastName, address, city, state, zip, email)' [user.firstName, user.lastName, user.address, user.city, user.state, user.zip, user.email])
-  
-// }
+
 
 app.get('/auth/facebook',
     passport.authenticate('facebook'));
@@ -147,12 +137,12 @@ const strategy = new LocalStrategy({
   function(email, password, done) {
     findUserByEmail(email)
       .then(function(result) {
-          console.log(result.rows, '-------------')
+          console.log(result)
           var user = result.rows[0];
           var mappedPassword = result.rows.map(function(rows){
             return rows.password
         })
-        console.log(mappedPassword[0], password)
+        
         if (user && mappedPassword[0] === password) {
           return done(null, user);
         } else {
@@ -172,12 +162,32 @@ passport.use(strategy);
   app.post('/',
   passport.authenticate('local', { failureRedirect: '/error' }),
   function(req, res) {
+   
         res.redirect('/homepage');
   });
 
   //create user
+  function addUser(user){
+    console.log(user.zip)
+    return db.raw(
+        `INSERT into "Users"
+         ("firstName", "lastName", address, city, state, zip, email, "password")
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+         [user.firstName, user.lastName, user.address, user.city, user.state, user.zip, user.email, user.password])
+  
+}
 
-  app.post('/createUser')
+  app.post('/createUser', function(req, res, next){
+      addUser(req.body)
+      
+        .then(function(){
+            console.log(req.body)
+            res.send('hopefully we created your User ')
+         })
+         .catch(function () {
+            res.status(500).send('something went wrong. waaah, waaah')
+         })
+  })
 
   app.listen(port, () => {
     console.log('app listening on port ' + port)
