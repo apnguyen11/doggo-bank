@@ -133,6 +133,8 @@ const strategy = new LocalStrategy({
   username: 'email'
 },
 function (email, password, done) {
+    
+   
   findUserByEmail(email)
     .then(function (result) {
       // console.log(result.rows, '-------------')
@@ -140,8 +142,12 @@ function (email, password, done) {
       var mappedPassword = result.rows.map(function (rows) {
         return rows.password
       })
+      var comparison = bcrypt.compareSync(password, mappedPassword[0]);
+      console.log(comparison, 'if true bcrypt password is verified')
       // console.log(mappedPassword[0], password)
       if (user && mappedPassword[0] === password) {
+        return done(null, user)
+      } else if (user && comparison){
         return done(null, user)
       } else {
         return done(null, false)
@@ -170,7 +176,8 @@ app.post('/',
 
         getCheckingBalance(req.user.id)
         .then((bal) => {
-          console.log(bal[0].checkingBal)
+        //   console.log(bal[0].checkingBal)
+        console.log(bal)
           return bal[0].checkingBal
         }).then((chkBal) => {
           res.send(mustache.render(homepageTemplate, {
