@@ -30,38 +30,44 @@ var logger = require('morgan')
 
 const {getUserBalance} = require('./src/userqueries.js')
 
+
 // initialize server
 
+app.use(express.static(__dirname))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(passport.initialize())
 app.use(passport.session())
 const port = process.env.PORT || 3000
 
 // load templates
-const homepageTemplate = fs.readFileSync('./templates/homepage.html', 'utf8')
-const createLogin = fs.readFileSync('./templates/createUser.html', 'utf8')
+const homepageTemplate = fs.readFileSync('./templates/homepage.mustache', 'utf8')
+const createUser = fs.readFileSync('./templates/createUser.html', 'utf8')
+
 
 // login page
+
 app.get('/', (req, res) => res.sendFile('auth.html', { root: __dirname }))
 app.get('/success', (req, res) => res.send('You successfully logged in'))
-app.get('/error', (req, res) => res.send('error logging in'))
+app.get('/error', (req, res) => res.send('Username or password is incorrect'))
 
 passport.serializeUser(function (user, cb) {
   cb(null, user)
 })
 
-app.get('/createLogin', (req, res) => {
-  res.send(createLogin)
-})
 
-// passport.deserializeUser(function(obj, cb){
-//     cb(null, obj);
-// });
-passport.deserializeUser(function (id, cb) {
-  User.findById(id, function (err, user) {
-    cb(err, user)
-  })
-})
+
+function createLogin(req, res, next){
+    res.send(createUser)
+}
+app.get('/createLogin', createLogin)
+
+
+passport.deserializeUser(function(id, cb) {
+    User.findById(id, function(err, user) {
+      cb(err, user);
+    });
+  });
+
 
 const FacebookStrategy = require('passport-facebook').Strategy
 
@@ -69,62 +75,37 @@ const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID
 const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET
 
 app.get('/auth/facebook',
-  passport.authenticate('facebook', { scope: 'email' }))
+    passport.authenticate('facebook', {scope: 'email'}));
 
-// function isAuthenticated(rowNum){
-//     if(rowNum == 1){
-//         return true
-//     } else {
-//         return false
-//     }
-// }
 
 passport.use(new FacebookStrategy({
-  clientID: FACEBOOK_APP_ID,
-  clientSecret: FACEBOOK_APP_SECRET,
-  callbackURL: '/auth/facebook/callback',
-  profileFields: ['id', 'displayName', 'name', 'gender', 'profileUrl', 'emails', 'photos']
-}, function (accessToken, refreshToken, profile, cb) {
-  // console.log(profile, '-----------------')
-  findUser('Pete47@gmail.com')
-    .then(function (results) {
-      // console.log(results.rows)
-      if (results.rows.length !== 0) {
-        // console.log('user exists')
-        throw null
-        return result
-      } else {
+    clientID: FACEBOOK_APP_ID,
+    clientSecret: FACEBOOK_APP_SECRET,
+    callbackURL: '/auth/facebook/callback',
+    profileFields: ['id', 'displayName', 'name', 'gender', 'profileUrl', 'emails', 'photos']
+}, function(accessToken, refreshToken, profile, cb){
+    findUser('Pete47@gmail.com')
+    .then(function(results){
+        if(results.rows.length !== 0){
+            throw null
+            return result
+        } else {
 
-        // app.get('/auth/facebook/callback',
-        // passport.authenticate('facebook', { failureRedirect: '/error'}),
-        // function(req, res){
-        //     res.redirect('/createLogin');
-        // })
-      }
+        }
     })
 
-  return cb(null, profile)
-}
-))
+    return cb(null, profile);
+  }
+));
 
-function findUser (email) {
-  // return db.raw('TABLE Users')
-  return db.raw('SELECT * FROM "Users" WHERE email = ?', [email])
-  // .then(function(results){
-  //     console.log(results)
-  //     if(results.length !== 1){
-  //         console.log('user not here')
-  //         throw null
-  //     } else {
-  //         console.log(results)
-  //         return results
-  //     }
-  // })
+
+function findUser(email) {
+   
+    return db.raw('SELECT * FROM "Users" WHERE email = ?', [email])
+  
 };
 
-function createUser (user) {
-  return db.raw('INSERT INTO Users (firstName, lastName, address, city, state, zip, email)'[user.firstName, user.lastName, user.address, user.city, user.state, user.zip, user.email])
-}
+
 
 app.get('/auth/facebook',
   passport.authenticate('facebook'))
@@ -185,20 +166,44 @@ app.post('/',
         })
     }
 
-    getCheckingBalance(req.user.id)
-      .then((bal) => {
-        console.log(bal[0].checkingBal)
-        return bal[0].checkingBal
-      }).then((chkBal) => {
-        res.send(mustache.render(homepageTemplate, {
-          firstName: req.user.firstName,
-          checkingBalance: chkBal
-        }
-        ))
-      })
-  }
-)
+        getCheckingBalance(req.user.id)
+        .then((bal) => {
+          console.log(bal[0].checkingBal)
+          return bal[0].checkingBal
+        }).then((chkBal) => {
+          res.send(mustache.render(homepageTemplate, {
+            firstName: req.user.firstName,
+            checkingBalance: chkBal
+          }
+          ))
+        })
+  })
 
-app.listen(port, () => {
-  console.log('app listening on port ' + port)
-})
+
+  //create user
+  function addUser(user){
+    console.log(user.zip)
+    return db.raw(
+        `INSERT into "Users"
+         ("firstName", "lastName", address, city, state, zip, email, "password")
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+         [user.firstName, user.lastName, user.address, user.city, user.state, user.zip, user.email, user.password])
+  
+}
+
+  app.post('/createUser', function(req, res, next){
+      addUser(req.body)
+      
+        .then(function(){
+            console.log(req.body)
+            res.send('hopefully we created your User ')
+         })
+         .catch(function () {
+            res.status(500).send('something went wrong. waaah, waaah')
+         })
+  })
+
+  app.listen(port, () => {
+    console.log('app listening on port ' + port)
+  
+});
