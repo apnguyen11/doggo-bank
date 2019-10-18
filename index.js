@@ -7,57 +7,54 @@
 // import { userInfo } from "os";
 
 // initialize modules
-require('dotenv').config();
-const mustache = require('mustache');
-const fs = require('fs');
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const session = require('express-session');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+require('dotenv').config()
+const mustache = require('mustache')
+const fs = require('fs')
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
+const session = require('express-session')
+const passport = require('passport')
+const LocalStrategy = require('passport-local').Strategy
 
-
-
-const environment = process.env.NODE_ENV || 'development';
-const dbConfigs = require('./knexfile.js');
+const environment = process.env.NODE_ENV || 'development'
+const dbConfigs = require('./knexfile.js')
 const db = require('knex')(dbConfigs.development)
 
-var createError = require('http-errors');
-var path = require('path');
-var cookieParser = ('cookie-parser');
-var logger = require('morgan');
+var createError = require('http-errors')
+var path = require('path')
+var cookieParser = ('cookie-parser')
+var logger = require('morgan')
+
+// import local modules
+
+const {getUserBalance} = require('./src/userqueries.js')
+
 
 // initialize server
 
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(passport.initialize());
-app.use(passport.session());
-const port = process.env.PORT || 3000;
-app.use(express.static(__dirname));
-
+app.use(express.static(__dirname))
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(passport.initialize())
+app.use(passport.session())
+const port = process.env.PORT || 3000
 
 // load templates
 const homepageTemplate = fs.readFileSync('./templates/homepage.mustache', 'utf8')
 const createUser = fs.readFileSync('./templates/createUser.html', 'utf8')
 
 
+// login page
 
+app.get('/', (req, res) => res.sendFile('auth.html', { root: __dirname }))
+app.get('/success', (req, res) => res.send('You successfully logged in'))
+app.get('/error', (req, res) => res.send('Username or password is incorrect'))
 
-// load the homepage 
-app.get('/homepage', (req, res) => {
-    res.send(homepageTemplate)
+passport.serializeUser(function (user, cb) {
+  cb(null, user)
 })
 
 
-// login page
-app.get('/', (req, res) => res.sendFile('auth.html', {root: __dirname}));
-app.get('/success', (req, res) => res.send('You successfully logged in'));
-app.get('/error', (req, res) => res.send('Username or password is incorrect'));
-
-passport.serializeUser(function(user, cb){
-    cb(null, user);
-});
 
 function createLogin(req, res, next){
     res.send(createUser)
@@ -71,10 +68,11 @@ passport.deserializeUser(function(id, cb) {
     });
   });
 
-const FacebookStrategy = require('passport-facebook').Strategy;
 
-const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID;
-const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
+const FacebookStrategy = require('passport-facebook').Strategy
+
+const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID
+const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET
 
 app.get('/auth/facebook',
     passport.authenticate('facebook', {scope: 'email'}));
@@ -110,61 +108,77 @@ function findUser(email) {
 
 
 app.get('/auth/facebook',
-    passport.authenticate('facebook'));
-
-
+  passport.authenticate('facebook'))
 
 app.get('/auth/facebook/callback',
-    passport.authenticate('facebook', { failureRedirect: '/error'}),
-    function(req, res, next){
-            res.redirect('/homepage');
-    });
+  passport.authenticate('facebook', { failureRedirect: '/error' }),
+  function (req, res, next) {
+    //     if(req.isAuthenticated()){
+    //         next()
+    //     } else {
+    res.redirect('/homepage')
+    // }
+    // console.log( req._passport.instance.session)
+  })
 
-
-//knex search query
-function findUserByEmail(email){
-    return db.raw('SELECT * FROM "Users" WHERE email = ?', [email])
+// knex search query
+function findUserByEmail (email) {
+  return db.raw('SELECT * FROM "Users" WHERE email = ?', [email])
 }
-
-
-
-
 
 // Passport Local Setup
 const strategy = new LocalStrategy({
-    username: 'email'
-  },
-  function(email, password, done) {
-    findUserByEmail(email)
-      .then(function(result) {
-          console.log(result)
-          var user = result.rows[0];
-          var mappedPassword = result.rows.map(function(rows){
-            return rows.password
-        })
-        
-        if (user && mappedPassword[0] === password) {
-          return done(null, user);
-        } else {
-            console.log('not right user')
-          return done(null, false);
-        }
+  username: 'email'
+},
+function (email, password, done) {
+  findUserByEmail(email)
+    .then(function (result) {
+      // console.log(result.rows, '-------------')
+      var user = result.rows[0]
+      var mappedPassword = result.rows.map(function (rows) {
+        return rows.password
       })
-      .catch(function(err) {
-        console.log('findUserByEmail err:', err);
-        return done(err);
-      });
-    }
-);
+      // console.log(mappedPassword[0], password)
+      if (user && mappedPassword[0] === password) {
+        return done(null, user)
+      } else {
+        return done(null, false)
+      }
+    })
+    .catch(function (err) {
+      console.log('findUserByEmail err:', err)
+      return done(err)
+    })
+}
+)
 
-passport.use(strategy);
+passport.use(strategy)
 
-  app.post('/',
+app.post('/',
   passport.authenticate('local', { failureRedirect: '/error' }),
-  function(req, res) {
-   
-        res.redirect('/homepage');
-  });
+  function (req, res) {
+    console.log('hello ' + req.user.firstName)
+
+    function getCheckingBalance (userId) {
+      return db.select('checkingBal').from('Accounts').leftJoin('Users', 'Accounts.userId', 'Users.id')
+        .where({
+          'Accounts.userId': userId
+        })
+    }
+
+        getCheckingBalance(req.user.id)
+        .then((bal) => {
+          console.log(bal[0].checkingBal)
+          return bal[0].checkingBal
+        }).then((chkBal) => {
+          res.send(mustache.render(homepageTemplate, {
+            firstName: req.user.firstName,
+            checkingBalance: chkBal
+          }
+          ))
+        })
+  })
+
 
   //create user
   function addUser(user){
