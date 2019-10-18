@@ -7,78 +7,69 @@
 // import { userInfo } from "os";
 
 // initialize modules
-require('dotenv').config();
-const mustache = require('mustache');
-const fs = require('fs');
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const session = require('express-session');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+require('dotenv').config()
+const mustache = require('mustache')
+const fs = require('fs')
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
+const session = require('express-session')
+const passport = require('passport')
+const LocalStrategy = require('passport-local').Strategy
 
-
-const environment = process.env.NODE_ENV || 'development';
-const dbConfigs = require('./knexfile.js');
-const knex = require('knex')('development');
+const environment = process.env.NODE_ENV || 'development'
+const dbConfigs = require('./knexfile.js')
 const db = require('knex')(dbConfigs.development)
 
-var createError = require('http-errors');
-var path = require('path');
-var cookieParser = ('cookie-parser');
-var logger = require('morgan');
+var createError = require('http-errors')
+var path = require('path')
+var cookieParser = ('cookie-parser')
+var logger = require('morgan')
+
+// import local modules
+
+const {getUserBalance} = require('./src/userqueries.js')
 
 // initialize server
 
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(passport.initialize());
-app.use(passport.session());
-const port = process.env.PORT || 3000;
-
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(passport.initialize())
+app.use(passport.session())
+const port = process.env.PORT || 3000
 
 // load templates
 const homepageTemplate = fs.readFileSync('./templates/homepage.html', 'utf8')
 const createLogin = fs.readFileSync('./templates/createUser.html', 'utf8')
 
+// login page
+app.get('/', (req, res) => res.sendFile('auth.html', { root: __dirname }))
+app.get('/success', (req, res) => res.send('You successfully logged in'))
+app.get('/error', (req, res) => res.send('error logging in'))
 
-
-// load the homepage 
-app.get('/homepage', (req, res) => {
-    res.send(homepageTemplate)
+passport.serializeUser(function (user, cb) {
+  cb(null, user)
 })
 
-
-// login page
-app.get('/', (req, res) => res.sendFile('auth.html', {root: __dirname}));
-app.get('/success', (req, res) => res.send('You successfully logged in'));
-app.get('/error', (req, res) => res.send('error logging in'));
-
-passport.serializeUser(function(user, cb){
-    cb(null, user);
-});
-
 app.get('/createLogin', (req, res) => {
-    res.send(createLogin)
+  res.send(createLogin)
 })
 
 // passport.deserializeUser(function(obj, cb){
 //     cb(null, obj);
 // });
-passport.deserializeUser(function(id, cb) {
-    User.findById(id, function(err, user) {
-      cb(err, user);
-    });
-  });
+passport.deserializeUser(function (id, cb) {
+  User.findById(id, function (err, user) {
+    cb(err, user)
+  })
+})
 
-const FacebookStrategy = require('passport-facebook').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy
 
-const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID;
-const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
+const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID
+const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET
 
 app.get('/auth/facebook',
-    passport.authenticate('facebook', {scope: 'email'}));
-
-
+  passport.authenticate('facebook', { scope: 'email' }))
 
 // function isAuthenticated(rowNum){
 //     if(rowNum == 1){
@@ -89,123 +80,125 @@ app.get('/auth/facebook',
 // }
 
 passport.use(new FacebookStrategy({
-    clientID: FACEBOOK_APP_ID,
-    clientSecret: FACEBOOK_APP_SECRET,
-    callbackURL: '/auth/facebook/callback',
-    profileFields: ['id', 'displayName', 'name', 'gender', 'profileUrl', 'emails', 'photos']
-}, function(accessToken, refreshToken, profile, cb){
-    // console.log(profile, '-----------------')
-    findUser('Pete47@gmail.com')
-    .then(function(results){
-        // console.log(results.rows)
-        if(results.rows.length !== 0){
-            // console.log('user exists')
-            throw null
-            return result
-        } else {
-            
-            
-            // app.get('/auth/facebook/callback',
-            // passport.authenticate('facebook', { failureRedirect: '/error'}),
-            // function(req, res){
-            //     res.redirect('/createLogin');
-            // })
-        }
+  clientID: FACEBOOK_APP_ID,
+  clientSecret: FACEBOOK_APP_SECRET,
+  callbackURL: '/auth/facebook/callback',
+  profileFields: ['id', 'displayName', 'name', 'gender', 'profileUrl', 'emails', 'photos']
+}, function (accessToken, refreshToken, profile, cb) {
+  // console.log(profile, '-----------------')
+  findUser('Pete47@gmail.com')
+    .then(function (results) {
+      // console.log(results.rows)
+      if (results.rows.length !== 0) {
+        // console.log('user exists')
+        throw null
+        return result
+      } else {
+
+        // app.get('/auth/facebook/callback',
+        // passport.authenticate('facebook', { failureRedirect: '/error'}),
+        // function(req, res){
+        //     res.redirect('/createLogin');
+        // })
+      }
     })
 
-    return cb(null, profile);
-  }
-));
+  return cb(null, profile)
+}
+))
 
-
-function findUser(email) {
-    // return db.raw('TABLE Users')
-    return db.raw('SELECT * FROM "Users" WHERE email = ?', [email])
-    // .then(function(results){
-    //     console.log(results)
-    //     if(results.length !== 1){
-    //         console.log('user not here')
-    //         throw null
-    //     } else {
-    //         console.log(results)
-    //         return results
-    //     }
-    // })
+function findUser (email) {
+  // return db.raw('TABLE Users')
+  return db.raw('SELECT * FROM "Users" WHERE email = ?', [email])
+  // .then(function(results){
+  //     console.log(results)
+  //     if(results.length !== 1){
+  //         console.log('user not here')
+  //         throw null
+  //     } else {
+  //         console.log(results)
+  //         return results
+  //     }
+  // })
 };
 
-function createUser(user){
-    return db.raw('INSERT INTO Users (firstName, lastName, address, city, state, zip, email)' [user.firstName, user.lastName, user.address, user.city, user.state, user.zip, user.email])
-  
+function createUser (user) {
+  return db.raw('INSERT INTO Users (firstName, lastName, address, city, state, zip, email)'[user.firstName, user.lastName, user.address, user.city, user.state, user.zip, user.email])
 }
 
 app.get('/auth/facebook',
-    passport.authenticate('facebook'));
-
-
+  passport.authenticate('facebook'))
 
 app.get('/auth/facebook/callback',
-    passport.authenticate('facebook', { failureRedirect: '/error'}),
-    function(req, res, next){
+  passport.authenticate('facebook', { failureRedirect: '/error' }),
+  function (req, res, next) {
     //     if(req.isAuthenticated()){
     //         next()
     //     } else {
-            res.redirect('/homepage');
-        // }
-        // console.log( req._passport.instance.session)
-        
-    });
+    res.redirect('/homepage')
+    // }
+    // console.log( req._passport.instance.session)
+  })
 
-
-//knex search query
-function findUserByEmail(email){
-    return db.raw('SELECT * FROM "Users" WHERE email = ?', [email])
+// knex search query
+function findUserByEmail (email) {
+  return db.raw('SELECT * FROM "Users" WHERE email = ?', [email])
 }
-
-
-
-
 
 // Passport Local Setup
 const strategy = new LocalStrategy({
-    username: 'email'
-  },
-  function(email, password, done) {
-    findUserByEmail(email)
-      .then(function(result) {
-          console.log(result.rows, '-------------')
-          var user = result.rows[0];
-          var mappedPassword = result.rows.map(function(rows){
-            return rows.password
-        })
-        console.log(mappedPassword[0], password)
-        if (user && mappedPassword[0] === password) {
-          return done(null, user);
-        } else {
-          return done(null, false);
-        }
+  username: 'email'
+},
+function (email, password, done) {
+  findUserByEmail(email)
+    .then(function (result) {
+      // console.log(result.rows, '-------------')
+      var user = result.rows[0]
+      var mappedPassword = result.rows.map(function (rows) {
+        return rows.password
       })
-      .catch(function(err) {
-        console.log('findUserByEmail err:', err);
-        return done(err);
-      });
-    }
-);
+      // console.log(mappedPassword[0], password)
+      if (user && mappedPassword[0] === password) {
+        return done(null, user)
+      } else {
+        return done(null, false)
+      }
+    })
+    .catch(function (err) {
+      console.log('findUserByEmail err:', err)
+      return done(err)
+    })
+}
+)
 
-passport.use(strategy);
+passport.use(strategy)
 
-  app.post('/',
+app.post('/',
   passport.authenticate('local', { failureRedirect: '/error' }),
-  function(req, res) {
-        res.redirect('/homepage');
-  });
+  function (req, res) {
+    console.log('hello ' + req.user.firstName)
 
+    function getCheckingBalance (userId) {
+      return db.select('checkingBal').from('Accounts').leftJoin('Users', 'Accounts.userId', 'Users.id')
+        .where({
+          'Accounts.userId': userId
+        })
+    }
 
-  app.listen(port, () => {
-    console.log('app listening on port ' + port)
-    // findUser('Pete47@gmail.com')
-    //     .then(function(response) {
-    //         console.log(response);
-    //     }).catch(function (err) {
-    //         console.log(err);
-    //     });
-});
+    getCheckingBalance(req.user.id)
+      .then((bal) => {
+        console.log(bal[0].checkingBal)
+        return bal[0].checkingBal
+      }).then((chkBal) => {
+        res.send(mustache.render(homepageTemplate, {
+          firstName: req.user.firstName,
+          checkingBalance: chkBal
+        }
+        ))
+      })
+  }
+)
+
+app.listen(port, () => {
+  console.log('app listening on port ' + port)
+})
