@@ -16,6 +16,8 @@ const bodyParser = require('body-parser')
 const session = require('express-session')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const environment = process.env.NODE_ENV || 'development'
 const dbConfigs = require('./knexfile.js')
@@ -131,6 +133,8 @@ const strategy = new LocalStrategy({
   username: 'email'
 },
 function (email, password, done) {
+    
+   
   findUserByEmail(email)
     .then(function (result) {
       // console.log(result.rows, '-------------')
@@ -138,8 +142,12 @@ function (email, password, done) {
       var mappedPassword = result.rows.map(function (rows) {
         return rows.password
       })
+      var comparison = bcrypt.compareSync(password, mappedPassword[0]);
+      console.log(comparison, 'if true bcrypt password is verified')
       // console.log(mappedPassword[0], password)
       if (user && mappedPassword[0] === password) {
+        return done(null, user)
+      } else if (user && comparison){
         return done(null, user)
       } else {
         return done(null, false)
@@ -168,7 +176,8 @@ app.post('/',
 
         getCheckingBalance(req.user.id)
         .then((bal) => {
-          console.log(bal[0].checkingBal)
+        //   console.log(bal[0].checkingBal)
+        console.log(bal)
           return bal[0].checkingBal
         }).then((chkBal) => {
           res.send(mustache.render(homepageTemplate, {
@@ -182,18 +191,20 @@ app.post('/',
 
   //create user
   function addUser(user){
-    console.log(user.zip)
+      var myPlaintextPassword = user.password
+      var hash = bcrypt.hashSync(myPlaintextPassword, saltRounds)
+
+  
     return db.raw(
         `INSERT into "Users"
          ("firstName", "lastName", address, city, state, zip, email, "password")
          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-         [user.firstName, user.lastName, user.address, user.city, user.state, user.zip, user.email, user.password])
+         [user.firstName, user.lastName, user.address, user.city, user.state, user.zip, user.email, hash])
   
 }
 
   app.post('/createUser', function(req, res, next){
       addUser(req.body)
-      
         .then(function(){
             console.log(req.body)
             res.send('hopefully we created your User ')
