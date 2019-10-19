@@ -5,6 +5,7 @@ const saltRounds = 10;
 
 // get the balance of the user checking account
 function getCheckingBalance (userId) {
+  
   return db.select('checkingBal').from('Accounts').leftJoin('Users', 'Accounts.userId', 'Users.id')
     .where({
       'Accounts.userId': userId

@@ -147,7 +147,15 @@ app.post('/',
     }).then((chkBal) => {
       res.send(mustache.render(homepageTemplate, {
         firstName: req.user.firstName,
-        checkingBalance: chkBal
+        checkingBalance: '$' +chkBal
+      }))
+    })
+    .catch(() => {
+      let noAccountFound = 'No account info found'
+
+      res.send(mustache.render(homepageTemplate, {
+        firstName: req.user.firstName,
+        checkingBalance: noAccountFound
       }))
     })
   }
