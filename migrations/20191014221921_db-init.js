@@ -28,6 +28,7 @@ exports.up = function (knex) {
         table.date('timestamp')
         table.string('company')
         table.float('amount')
+        table.string('accountType')
         table.integer('accountId')
         table.foreign('accountId').references('id').inTable('Accounts')
       })

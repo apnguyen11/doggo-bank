@@ -1,6 +1,6 @@
 const faker = require('faker')
 const numberOfUsers = 10
-const numberOfTransactions = 100
+const numberOfTransactions = 500
 
 exports.seed = function (knex) {
   // Deletes ALL existing entries
@@ -12,7 +12,16 @@ exports.seed = function (knex) {
       return knex('Users').del()
     })
     .then(() => {
-      const users = []
+      const users = [{
+        firstName: 'Admin',
+        lastName: 'Admin',
+        address: '123 Banana St',
+        city: 'Houston',
+        state: 'TX',
+        zip: 77003,
+        email: 'admin@admin.com',
+        password: 'password'
+      }]
 
       for (let i = 0; i < numberOfUsers; i++) {
         users.push({
@@ -32,7 +41,7 @@ exports.seed = function (knex) {
       return knex('Users').pluck('id').then((userIds) => {
         const accounts = []
 
-        for (let i = 0; i < numberOfUsers; i++) {
+        for (let i = 0; i < (numberOfUsers + 1); i++) {
           accounts.push({
             checking: faker.random.number(),
             savings: faker.random.number(),
@@ -46,6 +55,7 @@ exports.seed = function (knex) {
     })
     .then(() => {
       return knex('Accounts').pluck('id').then((accountIds) => {
+        const accountTypes = ['Checking', 'Savings']
         const transactions = []
 
         for (let i = 0; i < numberOfTransactions; i++) {
@@ -53,7 +63,8 @@ exports.seed = function (knex) {
             timestamp: faker.date.past(),
             company: faker.company.companyName(),
             amount: faker.finance.amount(),
-            accountId: faker.random.arrayElement(accountIds)
+            accountId: faker.random.arrayElement(accountIds),
+            accountType: faker.random.arrayElement(accountTypes)
           })
         }
         return knex('Transactions').insert(transactions)
