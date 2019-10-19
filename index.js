@@ -16,8 +16,7 @@ const bodyParser = require('body-parser')
 const session = require('express-session')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
-var bcrypt = require('bcrypt');
-const saltRounds = 10;
+const bcrypt = require('bcrypt')
 
 const environment = process.env.NODE_ENV || 'development'
 const dbConfigs = require('./knexfile.js')
@@ -29,12 +28,9 @@ var cookieParser = ('cookie-parser')
 var logger = require('morgan')
 
 // import local modules
-
-const {getUserBalance} = require('./src/userqueries.js')
-
+const {getCheckingBalance, addUser, findUser, findUserByEmail} = require('./src/user-functions.js')
 
 // initialize server
-
 app.use(express.static(__dirname))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(passport.initialize())
@@ -42,12 +38,10 @@ app.use(passport.session())
 const port = process.env.PORT || 3000
 
 // load templates
-const homepageTemplate = fs.readFileSync('./templates/homepage.mustache', 'utf8')
+const homepageTemplate = fs.readFileSync('./templates/homepage.html', 'utf8')
 const createUser = fs.readFileSync('./templates/createUser.html', 'utf8')
 
-
 // login page
-
 app.get('/', (req, res) => res.sendFile('auth.html', { root: __dirname }))
 app.get('/success', (req, res) => res.send('You successfully logged in'))
 app.get('/error', (req, res) => res.send('Username or password is incorrect'))
@@ -56,13 +50,10 @@ passport.serializeUser(function (user, cb) {
   cb(null, user)
 })
 
-
-
 function createLogin(req, res, next){
     res.send(createUser)
 }
 app.get('/createLogin', createLogin)
-
 
 passport.deserializeUser(function(id, cb) {
     User.findById(id, function(err, user) {
@@ -70,15 +61,12 @@ passport.deserializeUser(function(id, cb) {
     });
   });
 
-
 const FacebookStrategy = require('passport-facebook').Strategy
-
 const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID
 const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET
 
 app.get('/auth/facebook',
     passport.authenticate('facebook', {scope: 'email'}));
-
 
 passport.use(new FacebookStrategy({
     clientID: FACEBOOK_APP_ID,
@@ -100,15 +88,6 @@ passport.use(new FacebookStrategy({
   }
 ));
 
-
-function findUser(email) {
-   
-    return db.raw('SELECT * FROM "Users" WHERE email = ?', [email])
-  
-};
-
-
-
 app.get('/auth/facebook',
   passport.authenticate('facebook'))
 
@@ -123,19 +102,13 @@ app.get('/auth/facebook/callback',
     // console.log( req._passport.instance.session)
   })
 
-// knex search query
-function findUserByEmail (email) {
-  return db.raw('SELECT * FROM "Users" WHERE email = ?', [email])
-}
-
 // Passport Local Setup
 const strategy = new LocalStrategy({
   username: 'email'
-},
-function (email, password, done) {
-    
-   
-  findUserByEmail(email)
+  },
+
+  function (email, password, done) {  
+    findUserByEmail(email)
     .then(function (result) {
       // console.log(result.rows, '-------------')
       var user = result.rows[0]
@@ -157,64 +130,40 @@ function (email, password, done) {
       console.log('findUserByEmail err:', err)
       return done(err)
     })
-}
-)
+})
 
 passport.use(strategy)
 
 app.post('/',
   passport.authenticate('local', { failureRedirect: '/error' }),
   function (req, res) {
-    console.log('hello ' + req.user.firstName)
+    console.log('username ' + req.user.email + ' logged in')
 
-    function getCheckingBalance (userId) {
-      return db.select('checkingBal').from('Accounts').leftJoin('Users', 'Accounts.userId', 'Users.id')
-        .where({
-          'Accounts.userId': userId
-        })
-    }
+    getCheckingBalance(req.user.id)
+    .then((bal) => {
+    //   console.log(bal[0].checkingBal)
+    console.log(bal)
+      return bal[0].checkingBal
+    }).then((chkBal) => {
+      res.send(mustache.render(homepageTemplate, {
+        firstName: req.user.firstName,
+        checkingBalance: chkBal
+      }))
+    })
+  }
+)
 
-        getCheckingBalance(req.user.id)
-        .then((bal) => {
-        //   console.log(bal[0].checkingBal)
-        console.log(bal)
-          return bal[0].checkingBal
-        }).then((chkBal) => {
-          res.send(mustache.render(homepageTemplate, {
-            firstName: req.user.firstName,
-            checkingBalance: chkBal
-          }
-          ))
-        })
-  })
+app.post('/createUser', function(req, res, next){
+  addUser(req.body)
+    .then(function(){
+        console.log(req.body)
+        res.send('hopefully we created your User ')
+    })
+    .catch(function () {
+      res.status(500).send('something went wrong. waaah, waaah')
+    })
+})
 
-
-  //create user
-  function addUser(user){
-      var myPlaintextPassword = user.password
-      var hash = bcrypt.hashSync(myPlaintextPassword, saltRounds)
-
-  
-    return db.raw(
-        `INSERT into "Users"
-         ("firstName", "lastName", address, city, state, zip, email, "password")
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-         [user.firstName, user.lastName, user.address, user.city, user.state, user.zip, user.email, hash])
-  
-}
-
-  app.post('/createUser', function(req, res, next){
-      addUser(req.body)
-        .then(function(){
-            console.log(req.body)
-            res.send('hopefully we created your User ')
-         })
-         .catch(function () {
-            res.status(500).send('something went wrong. waaah, waaah')
-         })
-  })
-
-  app.listen(port, () => {
-    console.log('app listening on port ' + port)
-  
-});
+app.listen(port, () => {
+  console.log('app listening on port ' + port)
+})
