@@ -28,7 +28,7 @@ var cookieParser = ('cookie-parser')
 var logger = require('morgan')
 
 // import local modules
-const {getCheckingBalance, addUser, findUser, findUserByEmail} = require('./src/user-functions.js')
+const { getCheckingBalance, addUser, findUser, findUserByEmail, getBalances } = require('./src/user-functions.js')
 
 // initialize server
 app.use(express.static(__dirname))
@@ -139,25 +139,21 @@ app.post('/',
   function (req, res) {
     console.log('username ' + req.user.email + ' logged in')
 
-    getCheckingBalance(req.user.id)
-    .then((bal) => {
-    //   console.log(bal[0].checkingBal)
-    console.log(bal)
-      return bal[0].checkingBal
-    }).then((chkBal) => {
-      res.send(mustache.render(homepageTemplate, {
-        firstName: req.user.firstName,
-        checkingBalance: '$' +chkBal
-      }))
-    })
-    .catch(() => {
-      let noAccountFound = 'No account info found'
-
-      res.send(mustache.render(homepageTemplate, {
-        firstName: req.user.firstName,
-        checkingBalance: noAccountFound
-      }))
-    })
+    getBalances(req.user.id)
+      .then((bal) => {
+        res.send(mustache.render(homepageTemplate, {
+          firstName: req.user.firstName,
+          checkingBalance: '$' + bal[0].checkingBal,
+          savingsBalance: '$' + bal[0].savingsBal
+        }))
+      })
+      .catch(() => {
+        res.send(mustache.render(homepageTemplate, {
+          firstName: req.user.firstName,
+          checkingBalance: 'Error loading accounts',
+          savingsBalance: 'Error loading accounts'
+        }))
+      })
   }
 )
 
