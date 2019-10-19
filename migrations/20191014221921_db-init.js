@@ -25,7 +25,7 @@ exports.up = function (knex) {
     .then(() => {
       return knex.schema.createTable('Transactions', (table) => {
         table.increments('id')
-        table.date('timestamp')
+        table.datetime('timestamp')
         table.string('company')
         table.float('amount')
         table.string('accountType')
