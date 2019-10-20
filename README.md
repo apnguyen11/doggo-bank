@@ -8,7 +8,7 @@ ___
 ### Contributors
 ###### **Andy Nguyen**
 - Github /Initial structure
-- MongoDB setup and login
+- Postgres setup and login
 - User authentication
 
 
