@@ -28,7 +28,15 @@ var cookieParser = ('cookie-parser')
 var logger = require('morgan')
 
 // import local modules
-const {getCheckingBalance, addUser, findUser, findUserByEmail} = require('./src/user-functions.js')
+const {
+  addUser,
+  findUser,
+  findUserByEmail,
+  getBalances,
+  getTransactions,
+  renderChecking,
+  renderSavings
+} = require('./src/user-functions.js')
 
 // initialize server
 app.use(express.static(__dirname))
@@ -138,26 +146,55 @@ app.post('/',
   passport.authenticate('local', { failureRedirect: '/error' }),
   function (req, res) {
     console.log('username ' + req.user.email + ' logged in')
+    let userDetails
+    const checkingTransactions = []
+    const savingsTransactions = []
+    let checkingHTML = ''
+    let savingsHTML = ''
 
-    getCheckingBalance(req.user.id)
-    .then((bal) => {
-    //   console.log(bal[0].checkingBal)
-    console.log(bal)
-      return bal[0].checkingBal
-    }).then((chkBal) => {
-      res.send(mustache.render(homepageTemplate, {
-        firstName: req.user.firstName,
-        checkingBalance: '$' +chkBal
-      }))
-    })
-    .catch(() => {
-      let noAccountFound = 'No account info found'
-
-      res.send(mustache.render(homepageTemplate, {
-        firstName: req.user.firstName,
-        checkingBalance: noAccountFound
-      }))
-    })
+    getBalances(req.user.id)
+      .then((bal) => {
+        console.log(bal)
+        userDetails = {
+          chkBal: bal[0].checkingBal,
+          savBal: bal[0].savingsBal,
+          acctId: bal[0].id
+        }
+        return userDetails
+      })
+      .then((userDetails) => {
+        return getTransactions(userDetails.acctId)
+      })
+      .then((transactions) => {
+        console.log('finished checking for transactions')
+        // console.log(transactions)
+        transactions.forEach(element => {
+          if (element.accountType === 'Checking') {
+            checkingTransactions.push(element)
+          } else {
+            savingsTransactions.push(element)
+          }
+        })
+        checkingHTML = checkingTransactions.map(renderChecking).join('')
+        savingsHTML = savingsTransactions.map(renderSavings).join('')
+      })
+      .then(() => {
+        res.send(mustache.render(homepageTemplate, {
+          firstName: req.user.firstName,
+          checkingBalance: '$' + userDetails.chkBal,
+          savingsBalance: '$' + userDetails.savBal,
+          listOfCheckingTransactions: checkingHTML,
+          listOfSavingsTransactions: savingsHTML
+        }))
+      })
+      .catch((err) => {
+        console.log(err)
+        res.send(mustache.render(homepageTemplate, {
+          firstName: req.user.firstName,
+          checkingBalance: 'Error loading accounts',
+          savingsBalance: 'Error loading accounts'
+        }))
+      })
   }
 )
 
