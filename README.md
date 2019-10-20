@@ -30,7 +30,6 @@ ___
 - [Knex](http://knexjs.org/) -
 - [PassportJS](http://www.passportjs.org/) -
 - [Faker](https://www.npmjs.com/package/faker) -
-- [MongoDB](https://www.mongodb.com/) -
 - [Postgres](https://www.postgresql.org/) -
 - [JWT](https://jwt.io/introduction/) - 
 
