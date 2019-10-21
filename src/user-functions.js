@@ -4,13 +4,37 @@ const bcrypt = require('bcrypt')
 const saltRounds = 10
 const faker = require('faker')
 
-
 // get the balance of the user checking account
-function getCheckingBalance (userId) {
-  return db.select('checkingBal').from('Accounts').leftJoin('Users', 'Accounts.userId', 'Users.id')
+function getBalances (userId) {
+  return db.select('checkingBal', 'savingsBal', 'Accounts.id')
+    .from('Accounts')
+    .leftJoin('Users', 'Accounts.userId', 'Users.id')
     .where({
       'Accounts.userId': userId
     })
+}
+
+// get the transactions for a user
+function getTransactions (accountId) {
+  console.log('getting transactions for account id: ' + accountId)
+  return db.select('timestamp', 'company', 'amount', 'accountType')
+    .from('Transactions')
+    .leftJoin('Accounts', 'Transactions.accountId', 'Accounts.id')
+    .where({
+      'Transactions.accountId': accountId
+    })
+}
+
+function renderChecking (checkingArray) {
+  return `
+    <li>${checkingArray.timestamp} || ${checkingArray.company} || $${checkingArray.amount}</li>
+  `
+}
+
+function renderSavings (savingsArray) {
+  return `
+    <li>${savingsArray.timestamp} || ${savingsArray.company} || $${savingsArray.amount}</li>
+  `
 }
 
 // create user
@@ -34,52 +58,82 @@ function findUserByEmail (email) {
 }
 
 function createNewUserData(email){
-  
-  var newUserId;
-  // newUserId.push(db.select('id')
-  // .from("Users")
-  // .where({'email': email}))
-  db.select('id').from("Users").where('email', email).then((results) => { results })
-  
-  var newUserAccount = {
-      checking: faker.random.number(),
-      savings: faker.random.number(),
-      checkingBal: faker.finance.amount(),
-      savingsBal: faker.finance.amount(),
-      userId: newUserId[0]
-  }
 
-  db('Accounts').insert(newUserAccount)
 
-  var newAccountIds = db.from("Accounts").select('id').where('userId', newUserId[0])
+     db.select('id').from("Users").where('email', email).then((results) => {
+    
+        return db('Accounts').insert(
+          {checking: faker.random.number(),
+            savings: faker.random.number(),
+            checkingBal: faker.finance.amount(),
+            savingsBal: faker.finance.amount(),
+            userId: results[0].id},
+        )
+      })
 
-  var newUserTransactions = [
-    {
-      timestamp: faker.date.past(),
-      company: faker.company.companyName(),
-      amount: faker.finance.amount(),
-      accountId: faker.random.arrayElement(newAccountIds),
-      accountType: 'Checking'
-    },
-    {
-      timestamp: faker.date.past(),
-      company: faker.company.companyName(),
-      amount: faker.finance.amount(),
-      accountId: faker.random.arrayElement(newAccountIds),
-      accountType: 'Savings'
-    }
-]
+      db.select('id').from("Users").where('email', email)
+      .then((results) => {
+        db.select('id').from('Accounts').where('userId', results[0].id)
+          .then((results) => {
+            // console.log(results[0].id)
+            return db('Transactions').insert(
+              [
+                {
+                  timestamp: faker.date.past(),
+                  company: faker.company.companyName(),
+                  amount: faker.finance.amount(),
+                  accountId: results[0].id,
+                  accountType: 'Checking'
+                },
+                {
+                  timestamp: faker.date.past(),
+                  company: faker.company.companyName(),
+                  amount: faker.finance.amount(),
+                  accountId: results[0].id,
+                  accountType: 'Savings'
+                }
+              ]
+            )
+          })
 
-db.select('Transactions').insert(newUserTransactions)
+      })
+
+      
+     
+    
+
+//   var newAccountIds = db.from("Accounts").select('id').where('userId', newUserId[0])
+
+//  [
+//     {
+//       timestamp: faker.date.past(),
+//       company: faker.company.companyName(),
+//       amount: faker.finance.amount(),
+//       accountId: faker.random.arrayElement(newAccountIds),
+//       accountType: 'Checking'
+//     },
+//     {
+//       timestamp: faker.date.past(),
+//       company: faker.company.companyName(),
+//       amount: faker.finance.amount(),
+//       accountId: faker.random.arrayElement(newAccountIds),
+//       accountType: 'Savings'
+//     }
+// ]
+
+// db.select('Transactions').insert(newUserTransactions)
 
 }
 
 
 
 module.exports = {
-  getCheckingBalance: getCheckingBalance,
+  getBalances: getBalances,
   addUser: addUser,
   findUser: findUser,
   findUserByEmail: findUserByEmail,
-  createNewUserData: createNewUserData
+  createNewUserData: createNewUserData,
+  getTransactions: getTransactions,
+  renderChecking: renderChecking,
+  renderSavings: renderSavings
 }

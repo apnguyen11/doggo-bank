@@ -22,13 +22,17 @@ const bcrypt = require('bcrypt')
 const dbConfigs = require('./knexfile.js')
 const db = require('knex')(dbConfigs.development)
 
-// var createError = require('http-errors')
-// var path = require('path')
-// var cookieParser = ('cookie-parser')
-// var logger = require('morgan')
-
 // import local modules
-const { getCheckingBalance, addUser, findUser, findUserByEmail, createNewUserData } = require('./src/user-functions.js')
+const {
+  addUser,
+  findUser,
+  findUserByEmail,
+  getBalances,
+  getTransactions,
+  renderChecking,
+  renderSavings,
+  createNewUserData
+} = require('./src/user-functions.js')
 
 // initialize server
 app.use(express.static(__dirname))
@@ -138,22 +142,53 @@ app.post('/',
   passport.authenticate('local', { failureRedirect: '/error' }),
   function (req, res) {
     console.log('username ' + req.user.email + ' logged in')
+    let userDetails
+    const checkingTransactions = []
+    const savingsTransactions = []
+    let checkingHTML = ''
+    let savingsHTML = ''
 
-    getCheckingBalance(req.user.id)
+    getBalances(req.user.id)
       .then((bal) => {
-        return bal[0].checkingBal
-      }).then((chkBal) => {
+        console.log(bal)
+        userDetails = {
+          chkBal: bal[0].checkingBal,
+          savBal: bal[0].savingsBal,
+          acctId: bal[0].id
+        }
+        return userDetails
+      })
+      .then((userDetails) => {
+        return getTransactions(userDetails.acctId)
+      })
+      .then((transactions) => {
+        console.log('finished checking for transactions')
+        // console.log(transactions)
+        transactions.forEach(element => {
+          if (element.accountType === 'Checking') {
+            checkingTransactions.push(element)
+          } else {
+            savingsTransactions.push(element)
+          }
+        })
+        checkingHTML = checkingTransactions.map(renderChecking).join('')
+        savingsHTML = savingsTransactions.map(renderSavings).join('')
+      })
+      .then(() => {
         res.send(mustache.render(homepageTemplate, {
           firstName: req.user.firstName,
-          checkingBalance: '$' + chkBal
+          checkingBalance: '$' + userDetails.chkBal,
+          savingsBalance: '$' + userDetails.savBal,
+          listOfCheckingTransactions: checkingHTML,
+          listOfSavingsTransactions: savingsHTML
         }))
       })
-      .catch(() => {
-        const noAccountFound = 'No account info found'
-
+      .catch((err) => {
+        console.log(err)
         res.send(mustache.render(homepageTemplate, {
           firstName: req.user.firstName,
-          checkingBalance: noAccountFound
+          checkingBalance: 'Error loading accounts',
+          savingsBalance: 'Error loading accounts'
         }))
       })
   }
@@ -175,3 +210,4 @@ app.post('/createUser', function (req, res, next) {
 app.listen(port, () => {
   console.log('app listening on port ' + port)
 })
+
