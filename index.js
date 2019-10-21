@@ -32,6 +32,7 @@ const {
   renderChecking,
   renderSavings,
   createNewUserData
+  // createNewUserTransactions
 } = require('./src/user-functions.js')
 
 // initialize server
@@ -194,18 +195,26 @@ app.post('/',
   }
 )
 
-createNewUserData('abc@yahoo.com')
+
+
 app.post('/createUser', function (req, res, next) {
-  console.log(req.body.email, 'xoxoxoxoxoxoxox')
+  // console.log(req.body.email, 'xoxoxoxoxoxoxox')
+  var bodyEmail = req.body.email
+  
   addUser(req.body)
     .then(function () {
+      createNewUserData(bodyEmail)
       
       res.send('hopefully we created your User ')
     })
     .catch(function () {
       res.status(500).send('something went wrong. waaah, waaah')
     })
+   
+    
 })
+
+
 
 app.listen(port, () => {
   console.log('app listening on port ' + port)
