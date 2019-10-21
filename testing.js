@@ -41,7 +41,3 @@ console.log(transaction)
 
 console.log(date)
 
-// company name 
-// starting balance
-// transaction amount
-// 
