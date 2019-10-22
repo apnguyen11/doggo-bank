@@ -21,17 +21,17 @@ ___
 - ReadMe
 - Fake Data
 - Travis CI
-- JWT (JSON Web Token)
+- Form Validation
 
 ___
 
 ### Tools
-- [Express](https://www.expressjs.com/) -
+- [Express](https://www.expressjs.com/) - 
 - [Knex](http://knexjs.org/) -
 - [PassportJS](http://www.passportjs.org/) -
 - [Faker](https://www.npmjs.com/package/faker) -
 - [Postgres](https://www.postgresql.org/) -
-- [JWT](https://jwt.io/introduction/) - 
+
 
 
 ___ 
