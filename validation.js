@@ -58,7 +58,7 @@ app.post('/user', body('passwordConfirmation').custom((value, { req }) => {
 })
 
 // checking to see if password meets requirements
-app.post)('/user', [
+app.post('/user', [
   // cpome back to
   check('password')
     .isLength({ min: 6}).withMessage('Must be at least 6 charters long')
