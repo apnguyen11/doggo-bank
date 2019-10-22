@@ -9,7 +9,11 @@ ___
 ###### **Andy Nguyen**
 - Github /Initial structure
 - MongoDB setup and login
+<<<<<<< HEAD
 - OAUTH 
+=======
+- User authentication
+>>>>>>> master
 
 
 ###### **Joey Killam**

@@ -1,0 +1,16 @@
+#createLogin{
+    display:none;
+}
+
+h1 {
+    color: green
+}
+
+#checkingTransactions {
+    display: none
+
+}
+
+#savingsTransactions {
+    display: none
+}
