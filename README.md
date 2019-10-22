@@ -8,12 +8,8 @@ ___
 ### Contributors
 ###### **Andy Nguyen**
 - Github /Initial structure
-- MongoDB setup and login
-<<<<<<< HEAD
-- OAUTH 
-=======
+- Postgres setup and login
 - User authentication
->>>>>>> master
 
 
 ###### **Joey Killam**
@@ -34,7 +30,6 @@ ___
 - [Knex](http://knexjs.org/) -
 - [PassportJS](http://www.passportjs.org/) -
 - [Faker](https://www.npmjs.com/package/faker) -
-- [MongoDB](https://www.mongodb.com/) -
 - [Postgres](https://www.postgresql.org/) -
 
 
