@@ -31,7 +31,8 @@ const {
   getTransactions,
   renderChecking,
   renderSavings,
-  createNewUserData
+  createNewUserData,
+  sendMoney
   // createNewUserTransactions
 } = require('./src/user-functions.js')
 
@@ -211,29 +212,6 @@ app.post('/createUser', function (req, res, next) {
       res.status(500).send('something went wrong. waaah, waaah')
     })
 })
-function sendMoney (payeeEmail, amount) {
-  return db('Users').select('Users.id').where({ email: payeeEmail })
-    .then(payeeId => {
-      return db('Accounts').select('Accounts.checkingBal').where({ userId: payeeId[0].id })
-        .then(oldBal => {
-          console.log('oldBal: ' + oldBal[0].checkingBal)
-          let newBal = parseFloat(oldBal[0].checkingBal) + parseFloat(amount)
-          console.log('newBal: ' + newBal.toFixed(2))
-          console.log('payee: ' + payeeId[0].id)
-          return db('Accounts').where({ userId: payeeId[0].id })
-            .update({ checkingBal: newBal.toFixed(2) })
-          console.log('done updating account for user ' + payeeEmail)
-        })
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
-
-          //   db.raw(
-          //     `UPDATE 'Accounts' SET 'checkingBal' = ${newBal.toFixed(2)} WHERE 'userId' = ${payeeId[0].id}`)
-          // })
-
 
 app.post('/moneysent', (req, res) => {
   // console.log(req.body)
