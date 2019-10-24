@@ -205,7 +205,7 @@ app.post('/createUser', function (req, res, next) {
     .then(function () {
       createNewUserData(bodyEmail)
       
-      res.send('hopefully we created your User ')
+      res.send('<h1 style="text-align: center; padding: 50px">New User Successfully Created <br> <a <h1 style="text-align: center; padding: 50px" href="/">Go Home</a></h1> ')
     })
     .catch(function () {
       res.status(500).send('something went wrong. waaah, waaah')
@@ -215,6 +215,10 @@ app.post('/createUser', function (req, res, next) {
 })
 
 
+app.get('/logout', function (req, res) {
+  req.logout();
+  res.redirect('/')
+});
 
 app.listen(port, () => {
   console.log('app listening on port ' + port)
