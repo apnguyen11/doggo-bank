@@ -13,10 +13,10 @@ const fs = require('fs')
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
-// const session = require('express-session')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
+const session = require('express-session')
 
 // const environment = process.env.NODE_ENV || 'development'
 const dbConfigs = require('./knexfile.js')
@@ -40,6 +40,10 @@ app.use(express.static(__dirname))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(session({
+  secret: 'keyboard cat'
+}))
+
 const port = process.env.PORT || 3000
 
 // load templates
@@ -195,28 +199,76 @@ app.post('/',
   }
 )
 
-
-
 app.post('/createUser', function (req, res, next) {
   // console.log(req.body.email, 'xoxoxoxoxoxoxox')
   var bodyEmail = req.body.email
-  
   addUser(req.body)
     .then(function () {
       createNewUserData(bodyEmail)
-      
       res.send('hopefully we created your User ')
     })
     .catch(function () {
       res.status(500).send('something went wrong. waaah, waaah')
     })
-   
-    
 })
 
+app.post('/moneysent', (req, res) => {
+  // console.log(req.body)
+  console.log('send money to: ' + req.body.email)
+  console.log('amount: ' + req.body.amount)
 
+  let userDetails
+  const checkingTransactions = []
+  const savingsTransactions = []
+  let checkingHTML = ''
+  let savingsHTML = ''
+  console.log(req.session)
+  // res.send(req.session.passport.user.address)
+  getBalances(req.session.passport.user.id)
+    .then((bal) => {
+      console.log(bal)
+      userDetails = {
+        chkBal: bal[0].checkingBal,
+        savBal: bal[0].savingsBal,
+        acctId: bal[0].id
+      }
+      return userDetails
+    })
+    .then((userDetails) => {
+      return getTransactions(userDetails.acctId)
+    })
+    .then((transactions) => {
+      console.log('finished checking for transactions')
+      // console.log(transactions)
+      transactions.forEach(element => {
+        if (element.accountType === 'Checking') {
+          checkingTransactions.push(element)
+        } else {
+          savingsTransactions.push(element)
+        }
+      })
+      checkingHTML = checkingTransactions.map(renderChecking).join('')
+      savingsHTML = savingsTransactions.map(renderSavings).join('')
+    })
+    .then(() => {
+      res.send(mustache.render(homepageTemplate, {
+        firstName: req.session.passport.user.firstName,
+        checkingBalance: '$' + userDetails.chkBal,
+        savingsBalance: '$' + userDetails.savBal,
+        listOfCheckingTransactions: checkingHTML,
+        listOfSavingsTransactions: savingsHTML
+      }))
+    })
+    .catch((err) => {
+      console.log(err)
+      res.send(mustache.render(homepageTemplate, {
+        firstName: req.session.passport.user.firstName,
+        checkingBalance: 'Error loading accounts',
+        savingsBalance: 'Error loading accounts'
+      }))
+    })
+})
 
 app.listen(port, () => {
   console.log('app listening on port ' + port)
 })
-

@@ -13,7 +13,23 @@
 
     <h2><em>Hello, {{{firstName}}}</em></h2>
 
-    <div class="container">
+    <div class="container-fluid">
+
+        <p>Search for a another Bank Hub user below to send them money</p>
+
+        <form action="/moneysent" method="post">
+          <div>
+            <label>Search for user email: </label>
+            <input type="text" name="email" />
+      
+            <label>Amount to send: </label>
+            <input tpye="text" name="amount" />
+
+            <input type="submit" value="Send" />
+
+          </div>
+          
+        </form>
 
         <h3>Accounts</h3>
 
