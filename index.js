@@ -31,8 +31,7 @@ const {
   getTransactions,
   renderChecking,
   renderSavings,
-  createNewUserData,
-  sendMoney
+  createNewUserData
   // createNewUserTransactions
 } = require('./src/user-functions.js')
 
@@ -212,6 +211,29 @@ app.post('/createUser', function (req, res, next) {
       res.status(500).send('something went wrong. waaah, waaah')
     })
 })
+function sendMoney (payeeEmail, amount) {
+  return db('Users').select('Users.id').where({ email: payeeEmail })
+    .then(payeeId => {
+      return db('Accounts').select('Accounts.checkingBal').where({ userId: payeeId[0].id })
+        .then(oldBal => {
+          console.log('oldBal: ' + oldBal[0].checkingBal)
+          let newBal = parseFloat(oldBal[0].checkingBal) + parseFloat(amount)
+          console.log('newBal: ' + newBal.toFixed(2))
+          console.log('payee: ' + payeeId[0].id)
+          return db('Accounts').where({ userId: payeeId[0].id })
+            .update({ checkingBal: newBal.toFixed(2) })
+          console.log('done updating account for user ' + payeeEmail)
+        })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+          //   db.raw(
+          //     `UPDATE 'Accounts' SET 'checkingBal' = ${newBal.toFixed(2)} WHERE 'userId' = ${payeeId[0].id}`)
+          // })
+
 
 app.post('/moneysent', (req, res) => {
   // console.log(req.body)
@@ -226,10 +248,9 @@ app.post('/moneysent', (req, res) => {
   // console.log(req.session)
 
   sendMoney(req.body.email, req.body.amount)
-
-  getBalances(req.session.passport.user.id)
+    .then(() => {
+      return getBalances(req.session.passport.user.id)})
     .then((bal) => {
-      console.log(bal)
       userDetails = {
         chkBal: bal[0].checkingBal,
         savBal: bal[0].savingsBal,
@@ -242,7 +263,6 @@ app.post('/moneysent', (req, res) => {
     })
     .then((transactions) => {
       console.log('finished checking for transactions')
-      // console.log(transactions)
       transactions.forEach(element => {
         if (element.accountType === 'Checking') {
           checkingTransactions.push(element)
