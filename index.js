@@ -31,7 +31,8 @@ const {
   getTransactions,
   renderChecking,
   renderSavings,
-  createNewUserData
+  createNewUserData,
+  sendMoney
   // createNewUserTransactions
 } = require('./src/user-functions.js')
 
@@ -222,8 +223,10 @@ app.post('/moneysent', (req, res) => {
   const savingsTransactions = []
   let checkingHTML = ''
   let savingsHTML = ''
-  console.log(req.session)
-  // res.send(req.session.passport.user.address)
+  // console.log(req.session)
+
+  sendMoney(req.body.email, req.body.amount)
+
   getBalances(req.session.passport.user.id)
     .then((bal) => {
       console.log(bal)

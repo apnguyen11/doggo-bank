@@ -166,8 +166,20 @@ function createNewUserData(email){
     //   })
   // })
 
-
-
+function sendMoney (payeeEmail, amount) {
+  db('Users').select('Users.id').where({ email: payeeEmail })
+    .then(payeeId => {
+      db('Accounts').select('Accounts.checkingBal').where({ userId: payeeId[0].id })
+        .then(oldBal => {
+          console.log('oldBal: ' + oldBal[0].checkingBal)
+          let newBal = parseFloat(oldBal[0].checkingBal) + parseFloat(amount)
+          console.log('newBal: ' + newBal.toFixed(2))
+          console.log('payee: ' + payeeId[0].id)
+          db('Accounts').where({ userId: payeeId[0].id })
+            .update({ 'checkingBal': newBal.toFixed(2) })
+        })
+    })
+}
 
 module.exports = {
   getBalances: getBalances,
@@ -177,6 +189,7 @@ module.exports = {
   createNewUserData: createNewUserData,
   getTransactions: getTransactions,
   renderChecking: renderChecking,
-  renderSavings: renderSavings
+  renderSavings: renderSavings,
+  sendMoney: sendMoney
   // createNewUserTransactions: createNewUserTransactions
 }
