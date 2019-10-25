@@ -24,17 +24,20 @@ function getTransactions (accountId) {
     .where({
       'Transactions.accountId': accountId
     })
+    .orderBy('timestamp', 'desc')
 }
 
 function renderChecking (checkingArray) {
+  const formattedTimestamp = (checkingArray.timestamp).toLocaleString()
   return `
-    <li>${checkingArray.timestamp} || ${checkingArray.company} || $${checkingArray.amount}</li>
+    <li>${formattedTimestamp} || ${checkingArray.company} || $${checkingArray.amount}</li>
   `
 }
 
 function renderSavings (savingsArray) {
+  const formattedTimestamp = (savingsArray.timestamp).toLocaleString()
   return `
-    <li>${savingsArray.timestamp} || ${savingsArray.company} || $${savingsArray.amount}</li>
+    <li>${formattedTimestamp} || ${savingsArray.company} || $${savingsArray.amount}</li>
   `
 }
 
@@ -122,6 +125,9 @@ function sendMoney (payeeEmail, amount, senderEmail) {
 }
 
 function updateSenderBalance (senderEmail, amount, payeeEmail) {
+  if (isNaN(amount)) {
+    document.write(amount + ' is not a number. Oops!')
+  }
   return db('Users').select('Users.id').where({ email: senderEmail })
     .then(senderId => {
       return db('Accounts').select('Accounts.checkingBal').where({ userId: senderId[0].id })

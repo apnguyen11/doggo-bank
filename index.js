@@ -176,33 +176,33 @@ app.post('/createUser', [
   }
 
   findUser(req.body.email)
-  .then((result) => {
-    console.log(result)
-    if(result.rows.length > 1){
-      res.send("There is already a user with this email!")
-    } else {
-      addUser(req.body)
-    .then(function () {
-      createNewUserData(bodyEmail)
-      
-      res.send('<h1 style="text-align: center; padding: 50px">New User Successfully Created <br> <a <h1 style="text-align: center; padding: 50px" href="/">Go Home</a></h1> ')
+    .then((result) => {
+      console.log(result)
+      if (result.rows.length > 1) {
+        res.send('There is already a user with this email!')
+      } else {
+        addUser(req.body)
+          .then(function () {
+            createNewUserData(bodyEmail)
+            res.send('<h1 style="text-align: center; padding: 50px">New User Successfully Created <br> <a <h1 style="text-align: center; padding: 50px" href="/">Go Home</a></h1> ')
+          })
+          .catch(function () {
+            res.status(500).send('something went wrong. waaah, waaah')
+          })
+      }
     })
-    .catch(function () {
-      res.status(500).send('something went wrong. waaah, waaah')
-    })
-    }
-  })
-
-  
-   
-    
 })
 
-app.post('/moneysent', (req, res) => {
+app.post('/moneysent', (req, res, next) => {
   // console.log(req.body)
-  console.log('send money to: ' + req.body.email)
-  console.log('amount: ' + req.body.amount)
-
+  // console.log('send money to: ' + req.body.email)
+  // console.log('amount: ' + req.body.amount)
+  // console.log(req.session)
+  if (isNaN(req.body.amount)) {
+    return res.send('Oops! That is not a number.')
+  } else if (req.body.amount === '') {
+    return res.send("Oops! You didn't enter an amount.")
+  }
   let userDetails
   const checkingTransactions = []
   const savingsTransactions = []
@@ -212,7 +212,7 @@ app.post('/moneysent', (req, res) => {
 
   updateSenderBalance(req.session.passport.user.email, req.body.amount, req.body.email)
     .then(() => {
-      sendMoney(req.body.email, req.body.amount, req.session.passport.user.email)
+      return sendMoney(req.body.email, req.body.amount, req.session.passport.user.email)
     })
     .then(() => {
       return getBalances(req.session.passport.user.id)
