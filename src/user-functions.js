@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt')
 const saltRounds = 10
 const faker = require('faker')
 
-
 // get the balance of the user checking account
 function getBalances (userId) {
   return db.select('checkingBal', 'savingsBal', 'Accounts.id')
@@ -99,6 +98,7 @@ function createNewUserData (email) {
       })
   })
 }
+
 
 function sendMoney (payeeEmail, amount, senderEmail) {
   return db('Users').select('Users.id').where({ email: payeeEmail })

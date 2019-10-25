@@ -21,7 +21,6 @@ var transaction = faker.finance.amount()
 
 var date = faker.date.past()
 
-
 console.log(lastName)
 console.log(firstName)
 
@@ -40,4 +39,3 @@ console.log(company)
 console.log(transaction)
 
 console.log(date)
-

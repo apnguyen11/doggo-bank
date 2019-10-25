@@ -1,4 +1,5 @@
 ## Bank Hub ReadMe
+[![Build Status](https://travis-ci.com/apnguyen11/doggo-bank.svg?branch=master)](https://travis-ci.com/apnguyen11/doggo-bank)
 ___
 ### About
 ![alt text](SMTM.gif)
