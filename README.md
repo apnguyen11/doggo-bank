@@ -11,6 +11,7 @@ ___
 - Github /Initial structure
 - Postgres setup and login
 - User authentication
+- Travis CI
 
 
 ###### **Joey Killam**
@@ -21,8 +22,8 @@ ___
 ###### **Robert Foreman**
 - ReadMe
 - Fake Data
-- Travis CI
 - Form Validation
+- CSS/Bootstrap
 
 ___
 
