@@ -9,7 +9,8 @@
   "standard":{
     "globals": [
       "User",
-      "db"
+      "db",
+      "next"
     ]
   },
   "author": "Andy, Bobby, Joey",

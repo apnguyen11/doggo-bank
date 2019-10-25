@@ -193,7 +193,6 @@ app.post('/createUser', [
     })
 })
 
-
 app.post('/moneysent', (req, res, next) => {
   // console.log(req.body)
   // console.log('send money to: ' + req.body.email)
@@ -262,11 +261,10 @@ app.post('/moneysent', (req, res, next) => {
     })
 })
 app.get('/logout', function (req, res) {
-
   if (req.session) {
     req.session.destroy((err) => {
       if (err) {
-        return next (err)
+        return next(err)
       } else {
         return res.redirect('/')
       }
