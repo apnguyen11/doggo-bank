@@ -210,7 +210,7 @@ app.post('/moneysent', (req, res) => {
   let savingsHTML = ''
   // console.log(req.session)
 
-  updateSenderBalance(req.session.passport.user.email, req.body.amount)
+  updateSenderBalance(req.session.passport.user.email, req.body.amount, req.body.email)
     .then(() => {
       sendMoney(req.body.email, req.body.amount, req.session.passport.user.email)
     })
@@ -261,8 +261,18 @@ app.post('/moneysent', (req, res) => {
     })
 })
 app.get('/logout', function (req, res) {
-  req.logout();
-  res.redirect('/')
+
+  if (req.session) {
+    req.session.destroy((err) => {
+      if (err) {
+        return next (err)
+      } else {
+        return res.redirect('/')
+      }
+    })
+  }
+  // req.logout();
+  // res.redirect('/')
 });
 
 app.listen(port, () => {

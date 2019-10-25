@@ -111,6 +111,7 @@ function sendMoney (payeeEmail, amount, senderEmail) {
         })
         .then(() => {
           return db('Transactions').insert({
+            timestamp: new Date().toISOString(),
             company: senderEmail,
             amount: amount,
             accountType: 'Checking',
@@ -120,7 +121,7 @@ function sendMoney (payeeEmail, amount, senderEmail) {
     })
 }
 
-function updateSenderBalance (senderEmail, amount) {
+function updateSenderBalance (senderEmail, amount, payeeEmail) {
   return db('Users').select('Users.id').where({ email: senderEmail })
     .then(senderId => {
       return db('Accounts').select('Accounts.checkingBal').where({ userId: senderId[0].id })
@@ -128,6 +129,15 @@ function updateSenderBalance (senderEmail, amount) {
           let newBal = parseFloat(oldBal[0].checkingBal) - parseFloat(amount)
           return db('Accounts').where({ userId: senderId[0].id })
             .update({ checkingBal: newBal.toFixed(2) })
+        })
+        .then(() => {
+          return db('Transactions').insert({
+            timestamp: new Date().toISOString(),
+            company: payeeEmail,
+            amount: (amount *= -1),
+            accountType: 'Checking',
+            accountId: senderId[0].id
+          })
         })
     })
 }
@@ -142,6 +152,6 @@ module.exports = {
   renderChecking: renderChecking,
   renderSavings: renderSavings,
   sendMoney: sendMoney,
-  updateSenderBalance, updateSenderBalance
+  updateSenderBalance: updateSenderBalance
   // createNewUserTransactions: createNewUserTransactions
 }
