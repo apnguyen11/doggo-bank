@@ -23,17 +23,20 @@ function getTransactions (accountId) {
     .where({
       'Transactions.accountId': accountId
     })
+    .orderBy('timestamp', 'desc')
 }
 
 function renderChecking (checkingArray) {
+  const formattedTimestamp = (checkingArray.timestamp).toLocaleString()
   return `
-    <li>${checkingArray.timestamp} || ${checkingArray.company} || $${checkingArray.amount}</li>
+    <li>${formattedTimestamp} || ${checkingArray.company} || $${checkingArray.amount}</li>
   `
 }
 
 function renderSavings (savingsArray) {
+  const formattedTimestamp = (savingsArray.timestamp).toLocaleString()
   return `
-    <li>${savingsArray.timestamp} || ${savingsArray.company} || $${savingsArray.amount}</li>
+    <li>${formattedTimestamp} || ${savingsArray.company} || $${savingsArray.amount}</li>
   `
 }
 
@@ -58,104 +61,92 @@ function findUserByEmail (email) {
 }
 
 function createNewUserData (email) {
-  db.select('id').from('Users').where('email', email).then((results) => {
-    return db('Accounts').insert(
-      {
-        checking: faker.random.number(),
-        savings: faker.random.number(),
-        checkingBal: faker.finance.amount(),
-        savingsBal: faker.finance.amount(),
-        userId: results[0].id
-      }
+  db.select('id').from("Users").where('email', email).then((results) => {
+    return db('Accounts').insert({ 
+      checking: faker.random.number(),
+      savings: faker.random.number(),
+      checkingBal: faker.finance.amount(),
+      savingsBal: faker.finance.amount(),
+      userId: results[0].id}
     )
   }).then(() => {
-    db.select('id').from('Users').where('email', email)
+    db.select('id').from("Users").where('email', email)
       .then((results) => {
-        // console.log(results, '0000000000')
+      // console.log(results, '0000000000')
         var userId = results[0].id
         db.select('id').from('Accounts').where('userId', userId)
           .then((results) => {
-            // console.log(results[0].id)
-            // console.log(results, 'xxxxxxxxxxxxx')
+          // console.log(results[0].id)
+          // console.log(results, 'xxxxxxxxxxxxx')
             return db('Transactions').insert(
-              [
-                {
-                  timestamp: faker.date.past(),
-                  company: faker.company.companyName(),
-                  amount: faker.finance.amount(),
-                  accountId: results[0].id,
-                  accountType: 'Checking'
-                },
-                {
-                  timestamp: faker.date.past(),
-                  company: faker.company.companyName(),
-                  amount: faker.finance.amount(),
-                  accountId: results[0].id,
-                  accountType: 'Savings'
-                }
-              ]
+              [{
+                timestamp: faker.date.past(),
+                company: faker.company.companyName(),
+                amount: faker.finance.amount(),
+                accountId: results[0].id,
+                accountType: 'Checking'
+              },
+              {
+                timestamp: faker.date.past(),
+                company: faker.company.companyName(),
+                amount: faker.finance.amount(),
+                accountId: results[0].id,
+                accountType: 'Savings'
+              }]
             )
           })
       })
   })
 }
 
-// function createNewUserTransactions(e){
-//   db.select('id').from("Users").where('email', email)
-//   .then((results) => {
-//     console.log(results, '0000000000')
-//     var userId = results[0].id
-//     db.select('id').from('Accounts').where('userId', userId)
-//     .then((results) => {
-//       // console.log(results[0].id)
-//       console.log(results, 'xxxxxxxxxxxxx')
-//       return db('Transactions').insert(
-//         [
-//           {
-//             timestamp: faker.date.past(),
-//             company: faker.company.companyName(),
-//             amount: faker.finance.amount(),
-//             accountId: id,
-//             accountType: 'Checking'
-//           },
-//           {
-//             timestamp: faker.date.past(),
-//             company: faker.company.companyName(),
-//             amount: faker.finance.amount(),
-//             accountId: id,
-//             accountType: 'Savings'
-//           }
-//         ]
-//       )
-//     })
-//   })
-// }
 
-// console.log(id)
-// db.select('id').from('Accounts').where('userId', id)
-//   .then((results) => {
-//     // console.log(results[0].id)
-//     console.log(results, 'xxxxxxxxxxxxx')
-//     return db('Transactions').insert(
-//       [
-//         {
-//           timestamp: faker.date.past(),
-//           company: faker.company.companyName(),
-//           amount: faker.finance.amount(),
-//           accountId: id,
-//           accountType: 'Checking'
-//         },
-//         {
-//           timestamp: faker.date.past(),
-//           company: faker.company.companyName(),
-//           amount: faker.finance.amount(),
-//           accountId: id,
-//           accountType: 'Savings'
-//         }
-//       ]
-//     )
-//   })
-// })
+function sendMoney (payeeEmail, amount, senderEmail) {
+  return db('Users').select('Users.id').where({ email: payeeEmail })
+    .then(payeeId => {
+      return db('Accounts').select('Accounts.checkingBal').where({ userId: payeeId[0].id })
+        .then(oldBal => {
+          // console.log('oldBal: ' + oldBal[0].checkingBal)
+          let newBal = parseFloat(oldBal[0].checkingBal) + parseFloat(amount)
+          // console.log('newBal: ' + newBal.toFixed(2))
+          // console.log('payee: ' + payeeId[0].id)
+          return db('Accounts').where({ userId: payeeId[0].id })
+            .update({ checkingBal: newBal.toFixed(2) })
+        })
+        .then(() => {
+          return db('Transactions').insert({
+            timestamp: new Date().toISOString(),
+            company: senderEmail,
+            amount: amount,
+            accountType: 'Checking',
+            accountId: payeeId[0].id
+          })
+        })
+    })
+}
+
+function updateSenderBalance (senderEmail, amount, payeeEmail) {
+  if (isNaN(amount)) {
+    document.write(amount + ' is not a number. Oops!')
+  }
+  return db('Users').select('Users.id').where({ email: senderEmail })
+    .then(senderId => {
+      return db('Accounts').select('Accounts.checkingBal').where({ userId: senderId[0].id })
+        .then(oldBal => {
+          let newBal = parseFloat(oldBal[0].checkingBal) - parseFloat(amount)
+          return db('Accounts').where({ userId: senderId[0].id })
+            .update({ checkingBal: newBal.toFixed(2) })
+        })
+        .then(() => {
+          return db('Transactions').insert({
+            timestamp: new Date().toISOString(),
+            company: payeeEmail,
+            amount: (amount *= -1),
+            accountType: 'Checking',
+            accountId: senderId[0].id
+          })
+        })
+    })
+}
 
 module.exports = {
   getBalances: getBalances,
@@ -165,6 +156,8 @@ module.exports = {
   createNewUserData: createNewUserData,
   getTransactions: getTransactions,
   renderChecking: renderChecking,
-  renderSavings: renderSavings
+  renderSavings: renderSavings,
+  sendMoney: sendMoney,
+  updateSenderBalance: updateSenderBalance
   // createNewUserTransactions: createNewUserTransactions
 }
