@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <title>Bank Hub</title>
+</head>
+<body>
+    <h1>Welcome to Bank Hub!</h1>
+
+    <h2><em>Hello, {{{firstName}}}</em></h2>
+    <p>You just sent ${{{amountSent}}} to {{{payee}}}. Nice!</p>
+    <div class="container-fluid">
+
+        <p>Search for a another Bank Hub user below to send them money</p>
+
+        <form action="/moneysent" method="post">
+          <div>
+            <label>Search for user email: </label>
+            <input type="text" name="email" />
+      
+            <label>Amount to send: </label>
+            <input tpye="text" name="amount" />
+
+            <input type="submit" value="Send" />
+
+          </div>
+          
+        </form>
+
+        <h3>Accounts</h3>
+
+        <ul>
+            <li>Checking Balance: {{{checkingBalance}}} <button id="checkingAccountSelector">View Transactions</button></li>
+            <li>Savings Balance: {{{savingsBalance}}} <button id="savingsAccountSelector">View Transactions</button></li>
+        </ul>
+
+    </div>
+
+    <div id="checkingTransactions" class="container-fluid">
+        <h3>Checking Account Transactions</h3>
+        
+        <ul>
+            {{{listOfCheckingTransactions}}}
+        </ul>
+
+    </div>
+
+    <div id="savingsTransactions" class="container-fluid">
+        <h3>Savings Account Transactions</h3>
+        
+        <ul>
+            {{{listOfSavingsTransactions}}}
+        </ul>
+
+    </div>
+    <a href="/logout">logout</a>
+
+    <script src="script.js"></script>
+</body>
+</html>

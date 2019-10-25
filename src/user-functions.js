@@ -97,21 +97,26 @@ function createNewUserData (email) {
   })
 }
 
-function sendMoney (payeeEmail, amount) {
+function sendMoney (payeeEmail, amount, senderEmail) {
   return db('Users').select('Users.id').where({ email: payeeEmail })
     .then(payeeId => {
       return db('Accounts').select('Accounts.checkingBal').where({ userId: payeeId[0].id })
         .then(oldBal => {
-          console.log('oldBal: ' + oldBal[0].checkingBal)
+          // console.log('oldBal: ' + oldBal[0].checkingBal)
           let newBal = parseFloat(oldBal[0].checkingBal) + parseFloat(amount)
-          console.log('newBal: ' + newBal.toFixed(2))
-          console.log('payee: ' + payeeId[0].id)
+          // console.log('newBal: ' + newBal.toFixed(2))
+          // console.log('payee: ' + payeeId[0].id)
           return db('Accounts').where({ userId: payeeId[0].id })
             .update({ checkingBal: newBal.toFixed(2) })
         })
-    })
-    .catch((err) => {
-      console.log(err)
+        .then(() => {
+          return db('Transactions').insert({
+            company: senderEmail,
+            amount: amount,
+            accountType: 'Checking',
+            accountId: payeeId[0].id
+          })
+        })
     })
 }
 

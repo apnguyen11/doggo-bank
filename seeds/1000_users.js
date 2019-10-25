@@ -59,10 +59,12 @@ exports.seed = function (knex) {
         const transactions = []
 
         for (let i = 0; i < numberOfTransactions; i++) {
+          let transactionAmount = faker.finance.amount()
+          transactionAmount = transactionAmount - (transactionAmount * 2)
           transactions.push({
             timestamp: faker.date.past(),
             company: faker.company.companyName(),
-            amount: faker.finance.amount(),
+            amount: transactionAmount,
             accountId: faker.random.arrayElement(accountIds),
             accountType: faker.random.arrayElement(accountTypes)
           })

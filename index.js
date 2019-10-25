@@ -52,6 +52,7 @@ const port = process.env.PORT || 3000
 // load templates
 const homepageTemplate = fs.readFileSync('./templates/homepage.html', 'utf8')
 const createUser = fs.readFileSync('./templates/createUser.html', 'utf8')
+const moneySentTemplate = fs.readFileSync('./templates/moneysent.html', 'utf8')
 
 // login page
 app.get('/', (req, res) => res.sendFile('auth.html', { root: __dirname }))
@@ -211,7 +212,7 @@ app.post('/moneysent', (req, res) => {
 
   updateSenderBalance(req.session.passport.user.email, req.body.amount)
     .then(() => {
-      sendMoney(req.body.email, req.body.amount)
+      sendMoney(req.body.email, req.body.amount, req.session.passport.user.email)
     })
     .then(() => {
       return getBalances(req.session.passport.user.id)
@@ -240,8 +241,10 @@ app.post('/moneysent', (req, res) => {
       savingsHTML = savingsTransactions.map(renderSavings).join('')
     })
     .then(() => {
-      res.send(mustache.render(homepageTemplate, {
+      res.send(mustache.render(moneySentTemplate, {
         firstName: req.session.passport.user.firstName,
+        amountSent: req.body.amount,
+        payee: req.body.email,
         checkingBalance: '$' + userDetails.chkBal,
         savingsBalance: '$' + userDetails.savBal,
         listOfCheckingTransactions: checkingHTML,
