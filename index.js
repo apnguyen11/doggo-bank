@@ -20,8 +20,8 @@ const bcrypt = require('bcrypt')
 const { check, validationResult } = require('express-validator')
 
 // const environment = process.env.NODE_ENV || 'development'
-const dbConfigs = require('./knexfile.js')
-const db = require('knex')(dbConfigs.development)
+// const dbConfigs = require('./knexfile.js')
+// const db = require('knex')(dbConfigs.development)
 
 // import local modules
 const {
@@ -160,44 +160,38 @@ app.post('/createUser', [
   check('email').isEmail(),
   // password must be at least 5 chars long
   check('password').isLength({ min: 5 })
-],  function (req, res, next) {
+], function (req, res, next) {
   // console.log(req.body, 'xoxoxoxoxoxoxox')
   var bodyEmail = req.body.email
-  const errors = validationResult(req);
+  const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
+    return res.status(422).json({ errors: errors.array() })
   }
 
   findUser(req.body.email)
-  .then((result) => {
-    console.log(result)
-    if(result.rows.length > 1){
-      res.send("There is already a user with this email!")
-    } else {
-      addUser(req.body)
-    .then(function () {
-      createNewUserData(bodyEmail)
-      
-      res.send('<h1 style="text-align: center; padding: 50px">New User Successfully Created <br> <a <h1 style="text-align: center; padding: 50px" href="/">Go Home</a></h1> ')
-    })
-    .catch(function () {
-      res.status(500).send('something went wrong. waaah, waaah')
-    })
-    }
-  })
+    .then((result) => {
+      console.log(result)
+      if (result.rows.length > 1) {
+        res.send('There is already a user with this email!')
+      } else {
+        addUser(req.body)
+          .then(function () {
+            createNewUserData(bodyEmail)
 
-  
-   
-    
+            res.send('<h1 style="text-align: center; padding: 50px">New User Successfully Created <br> <a <h1 style="text-align: center; padding: 50px" href="/">Go Home</a></h1> ')
+          })
+          .catch(function () {
+            res.status(500).send('something went wrong. waaah, waaah')
+          })
+      }
+    })
 })
 
-
 app.get('/logout', function (req, res) {
-  req.logout();
+  req.logout()
   res.redirect('/')
-});
+})
 
 app.listen(port, () => {
   console.log('app listening on port ' + port)
 })
-
