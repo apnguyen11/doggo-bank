@@ -16,7 +16,11 @@ const bodyParser = require('body-parser')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
+<<<<<<< HEAD
 const session = require('express-session')
+=======
+const { check, validationResult } = require('express-validator')
+>>>>>>> master
 
 // const environment = process.env.NODE_ENV || 'development'
 const dbConfigs = require('./knexfile.js')
@@ -70,47 +74,6 @@ passport.deserializeUser(function (id, cb) {
     cb(err, user)
   })
 })
-
-const FacebookStrategy = require('passport-facebook').Strategy
-const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID
-const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET
-
-app.get('/auth/facebook',
-  passport.authenticate('facebook', { scope: 'email' }))
-
-passport.use(new FacebookStrategy({
-  clientID: FACEBOOK_APP_ID,
-  clientSecret: FACEBOOK_APP_SECRET,
-  callbackURL: '/auth/facebook/callback',
-  profileFields: ['id', 'displayName', 'name', 'gender', 'profileUrl', 'emails', 'photos']
-}, function (accessToken, refreshToken, profile, cb) {
-  findUser('Pete47@gmail.com')
-    .then(function (results) {
-      if (results.rows.length !== 0) {
-        throw null
-        return result
-      } else {
-
-      }
-    })
-
-  return cb(null, profile)
-}
-))
-
-app.get('/auth/facebook',
-  passport.authenticate('facebook'))
-
-app.get('/auth/facebook/callback',
-  passport.authenticate('facebook', { failureRedirect: '/error' }),
-  function (req, res, next) {
-    //     if(req.isAuthenticated()){
-    //         next()
-    //     } else {
-    res.redirect('/homepage')
-    // }
-    // console.log( req._passport.instance.session)
-  })
 
 // Passport Local Setup
 const strategy = new LocalStrategy({
@@ -200,6 +163,7 @@ app.post('/',
   }
 )
 
+<<<<<<< HEAD
 app.post('/createUser', function (req, res, next) {
   // console.log(req.body.email, 'xoxoxoxoxoxoxox')
   var bodyEmail = req.body.email
@@ -207,10 +171,45 @@ app.post('/createUser', function (req, res, next) {
     .then(function () {
       createNewUserData(bodyEmail)
       res.send('hopefully we created your User ')
+=======
+app.post('/createUser', [
+  // username must be an email
+  check('email').isEmail(),
+  // password must be at least 5 chars long
+  check('password').isLength({ min: 5 })
+],  function (req, res, next) {
+  // console.log(req.body, 'xoxoxoxoxoxoxox')
+  var bodyEmail = req.body.email
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  findUser(req.body.email)
+  .then((result) => {
+    console.log(result)
+    if(result.rows.length > 1){
+      res.send("There is already a user with this email!")
+    } else {
+      addUser(req.body)
+    .then(function () {
+      createNewUserData(bodyEmail)
+      
+      res.send('<h1 style="text-align: center; padding: 50px">New User Successfully Created <br> <a <h1 style="text-align: center; padding: 50px" href="/">Go Home</a></h1> ')
+>>>>>>> master
     })
     .catch(function () {
       res.status(500).send('something went wrong. waaah, waaah')
     })
+<<<<<<< HEAD
+=======
+    }
+  })
+
+  
+   
+    
+>>>>>>> master
 })
 
 app.post('/moneysent', (req, res) => {
@@ -225,6 +224,7 @@ app.post('/moneysent', (req, res) => {
   let savingsHTML = ''
   // console.log(req.session)
 
+<<<<<<< HEAD
   sendMoney(req.body.email, req.body.amount)
     .then(() => {
       return getBalances(req.session.passport.user.id)})
@@ -269,6 +269,12 @@ app.post('/moneysent', (req, res) => {
       }))
     })
 })
+=======
+app.get('/logout', function (req, res) {
+  req.logout();
+  res.redirect('/')
+});
+>>>>>>> master
 
 app.listen(port, () => {
   console.log('app listening on port ' + port)

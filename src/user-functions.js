@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt')
 const saltRounds = 10
 const faker = require('faker')
 
+
 // get the balance of the user checking account
 function getBalances (userId) {
   return db.select('checkingBal', 'savingsBal', 'Accounts.id')
