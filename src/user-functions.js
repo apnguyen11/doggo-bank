@@ -115,6 +115,18 @@ function sendMoney (payeeEmail, amount) {
     })
 }
 
+function updateSenderBalance (senderEmail, amount) {
+  return db('Users').select('Users.id').where({ email: senderEmail })
+    .then(senderId => {
+      return db('Accounts').select('Accounts.checkingBal').where({ userId: senderId[0].id })
+        .then(oldBal => {
+          let newBal = parseFloat(oldBal[0].checkingBal) - parseFloat(amount)
+          return db('Accounts').where({ userId: senderId[0].id })
+            .update({ checkingBal: newBal.toFixed(2) })
+        })
+    })
+}
+
 module.exports = {
   getBalances: getBalances,
   addUser: addUser,
@@ -124,6 +136,7 @@ module.exports = {
   getTransactions: getTransactions,
   renderChecking: renderChecking,
   renderSavings: renderSavings,
-  sendMoney: sendMoney
+  sendMoney: sendMoney,
+  updateSenderBalance, updateSenderBalance
   // createNewUserTransactions: createNewUserTransactions
 }

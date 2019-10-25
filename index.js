@@ -33,7 +33,8 @@ const {
   renderChecking,
   renderSavings,
   createNewUserData,
-  sendMoney
+  sendMoney,
+  updateSenderBalance
   // createNewUserTransactions
 } = require('./src/user-functions.js')
 
@@ -208,9 +209,13 @@ app.post('/moneysent', (req, res) => {
   let savingsHTML = ''
   // console.log(req.session)
 
-  sendMoney(req.body.email, req.body.amount)
+  updateSenderBalance(req.session.passport.user.email, req.body.amount)
     .then(() => {
-      return getBalances(req.session.passport.user.id)})
+      sendMoney(req.body.email, req.body.amount)
+    })
+    .then(() => {
+      return getBalances(req.session.passport.user.id)
+    })
     .then((bal) => {
       userDetails = {
         chkBal: bal[0].checkingBal,
