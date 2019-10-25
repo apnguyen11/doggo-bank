@@ -16,11 +16,8 @@ const bodyParser = require('body-parser')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
-<<<<<<< HEAD
 const session = require('express-session')
-=======
 const { check, validationResult } = require('express-validator')
->>>>>>> master
 
 // const environment = process.env.NODE_ENV || 'development'
 const dbConfigs = require('./knexfile.js')
@@ -163,15 +160,6 @@ app.post('/',
   }
 )
 
-<<<<<<< HEAD
-app.post('/createUser', function (req, res, next) {
-  // console.log(req.body.email, 'xoxoxoxoxoxoxox')
-  var bodyEmail = req.body.email
-  addUser(req.body)
-    .then(function () {
-      createNewUserData(bodyEmail)
-      res.send('hopefully we created your User ')
-=======
 app.post('/createUser', [
   // username must be an email
   check('email').isEmail(),
@@ -196,20 +184,16 @@ app.post('/createUser', [
       createNewUserData(bodyEmail)
       
       res.send('<h1 style="text-align: center; padding: 50px">New User Successfully Created <br> <a <h1 style="text-align: center; padding: 50px" href="/">Go Home</a></h1> ')
->>>>>>> master
     })
     .catch(function () {
       res.status(500).send('something went wrong. waaah, waaah')
     })
-<<<<<<< HEAD
-=======
     }
   })
 
   
    
     
->>>>>>> master
 })
 
 app.post('/moneysent', (req, res) => {
@@ -224,7 +208,6 @@ app.post('/moneysent', (req, res) => {
   let savingsHTML = ''
   // console.log(req.session)
 
-<<<<<<< HEAD
   sendMoney(req.body.email, req.body.amount)
     .then(() => {
       return getBalances(req.session.passport.user.id)})
@@ -269,12 +252,10 @@ app.post('/moneysent', (req, res) => {
       }))
     })
 })
-=======
 app.get('/logout', function (req, res) {
   req.logout();
   res.redirect('/')
 });
->>>>>>> master
 
 app.listen(port, () => {
   console.log('app listening on port ' + port)
