@@ -26,6 +26,7 @@ function getTransactions (accountId) {
     .orderBy('timestamp', 'desc')
 }
 
+// this is ran on a transaction array to format for HTML
 function renderChecking (checkingArray) {
   const formattedTimestamp = (checkingArray.timestamp).toLocaleString()
   return `
@@ -33,6 +34,7 @@ function renderChecking (checkingArray) {
   `
 }
 
+// this is ran on a transaction array to format for HTML
 function renderSavings (savingsArray) {
   const formattedTimestamp = (savingsArray.timestamp).toLocaleString()
   return `
@@ -100,6 +102,7 @@ function createNewUserData (email) {
   })
 }
 
+// this is ran when user sends money to another user, updating the recipient's account balance
 function sendMoney (payeeEmail, amount, senderEmail) {
   return db('Users').select('Users.id').where({ email: payeeEmail })
     .then(payeeId => {
@@ -112,6 +115,7 @@ function sendMoney (payeeEmail, amount, senderEmail) {
           return db('Accounts').where({ userId: payeeId[0].id })
             .update({ checkingBal: newBal.toFixed(2) })
         })
+        // new transaction added to recipient account
         .then(() => {
           return db('Transactions').insert({
             timestamp: new Date().toISOString(),
@@ -124,10 +128,8 @@ function sendMoney (payeeEmail, amount, senderEmail) {
     })
 }
 
+// this updates the balance of the sender when sending money to another user
 function updateSenderBalance (senderEmail, amount, payeeEmail) {
-  if (isNaN(amount)) {
-    document.write(amount + ' is not a number. Oops!')
-  }
   return db('Users').select('Users.id').where({ email: senderEmail })
     .then(senderId => {
       return db('Accounts').select('Accounts.checkingBal').where({ userId: senderId[0].id })
@@ -136,6 +138,7 @@ function updateSenderBalance (senderEmail, amount, payeeEmail) {
           return db('Accounts').where({ userId: senderId[0].id })
             .update({ checkingBal: newBal.toFixed(2) })
         })
+        // add a transaction to the sender account
         .then(() => {
           return db('Transactions').insert({
             timestamp: new Date().toISOString(),
