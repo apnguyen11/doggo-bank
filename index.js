@@ -38,7 +38,7 @@ const {
   // createNewUserTransactions
 } = require('./src/user-functions.js')
 
-// initialize server
+// initialize server, passport, and express session
 app.use(express.static(__dirname))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(passport.initialize())
@@ -110,6 +110,8 @@ app.post('/',
   passport.authenticate('local', { failureRedirect: '/error' }),
   function (req, res) {
     console.log('username ' + req.user.email + ' logged in')
+
+    // create variables that will be passed to HTML
     let userDetails
     const checkingTransactions = []
     const savingsTransactions = []
@@ -117,6 +119,7 @@ app.post('/',
     let savingsHTML = ''
 
     getBalances(req.user.id)
+      // after getting the users balances, the result is set to the userDetails object
       .then((bal) => {
         console.log(bal)
         userDetails = {
@@ -126,9 +129,11 @@ app.post('/',
         }
         return userDetails
       })
+      // the user acctId is used to get their transactions
       .then((userDetails) => {
         return getTransactions(userDetails.acctId)
       })
+      // transactions are pushed to an array
       .then((transactions) => {
         console.log('finished checking for transactions')
         // console.log(transactions)
@@ -139,9 +144,11 @@ app.post('/',
             savingsTransactions.push(element)
           }
         })
+        // the transactions are formatted into HTML in the render functions
         checkingHTML = checkingTransactions.map(renderChecking).join('')
         savingsHTML = savingsTransactions.map(renderSavings).join('')
       })
+      // now that all the data has been gathered, it can be sent to the browser
       .then(() => {
         res.send(mustache.render(homepageTemplate, {
           firstName: req.user.firstName,
@@ -198,25 +205,32 @@ app.post('/moneysent', (req, res, next) => {
   // console.log('send money to: ' + req.body.email)
   // console.log('amount: ' + req.body.amount)
   // console.log(req.session)
+
+  // check for whether amount field is not a number, or blank
   if (isNaN(req.body.amount)) {
     return res.send('Oops! That is not a number.')
   } else if (req.body.amount === '') {
     return res.send("Oops! You didn't enter an amount.")
   }
+
+  // create variables that will be passed to HTML
   let userDetails
   const checkingTransactions = []
   const savingsTransactions = []
   let checkingHTML = ''
   let savingsHTML = ''
-  // console.log(req.session)
 
+  // sender balance is updated based on user input
   updateSenderBalance(req.session.passport.user.email, req.body.amount, req.body.email)
+    // amount is sent to designated user
     .then(() => {
       return sendMoney(req.body.email, req.body.amount, req.session.passport.user.email)
     })
+    // new user balance is retrieved
     .then(() => {
       return getBalances(req.session.passport.user.id)
     })
+    // after getting the users balances, the result is set to the userDetails object
     .then((bal) => {
       userDetails = {
         chkBal: bal[0].checkingBal,
@@ -225,9 +239,11 @@ app.post('/moneysent', (req, res, next) => {
       }
       return userDetails
     })
+    // the user acctId is used to get their transactions
     .then((userDetails) => {
       return getTransactions(userDetails.acctId)
     })
+    // transactions are pushed to an array
     .then((transactions) => {
       console.log('finished checking for transactions')
       transactions.forEach(element => {
@@ -237,9 +253,11 @@ app.post('/moneysent', (req, res, next) => {
           savingsTransactions.push(element)
         }
       })
+      // the transactions are formatted into HTML in the render functions
       checkingHTML = checkingTransactions.map(renderChecking).join('')
       savingsHTML = savingsTransactions.map(renderSavings).join('')
     })
+    // now that all the data has been gathered, it can be sent to the browser
     .then(() => {
       res.send(mustache.render(moneySentTemplate, {
         firstName: req.session.passport.user.firstName,
@@ -260,6 +278,8 @@ app.post('/moneysent', (req, res, next) => {
       }))
     })
 })
+
+// logout button triggers this route, destroying the session
 app.get('/logout', function (req, res) {
   if (req.session) {
     req.session.destroy((err) => {
