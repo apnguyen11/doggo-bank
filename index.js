@@ -177,9 +177,10 @@ app.post('/createUser', [
 
   findUser(req.body.email)
     .then((result) => {
-      console.log(result)
-      if (result.rows.length > 1) {
-        res.send('There is already a user with this email!')
+      console.log(result.rows)
+      
+      if (result.rows.length >= 1) {
+        res.send('There is already a user with this email! <a <h1 href="/">Go Home</a></h1>')
       } else {
         addUser(req.body)
           .then(function () {
@@ -187,7 +188,7 @@ app.post('/createUser', [
             res.send('<h1 style="text-align: center; padding: 50px">New User Successfully Created <br> <a <h1 style="text-align: center; padding: 50px" href="/">Go Home</a></h1> ')
           })
           .catch(function () {
-            res.status(500).send('something went wrong. waaah, waaah')
+            res.status(500).send('something went wrong. waaah, waaah <a<h1 href="/">Go Home</a></h1>')
           })
       }
     })
