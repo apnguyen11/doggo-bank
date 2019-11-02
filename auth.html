@@ -1,28 +1,44 @@
 <html>
   <head>
-    <title>Node.js OAuth</title>
+    <title>BankHub</title>
     <!-- <link rel="stylesheet" href="styles.css"> -->
     <script href='index.js'></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <a href=auth/facebook>Sign in with Facebook</a>
-    <br></br>
-    <form action="/" method="post">
-      <div>
-        <label>Username:</label>
-        <input type="text" name="username" />
-        <br/>
+      <div class="modal-dialog text-center">
+        <div class="col-sm-9 main-section">
+          <div class="modal-content">
+
+            <div class="col-12 logo-box">
+              <h1 class="logo">BankHub</h1>
+            </div>
+
+            <div class="col-12 form-input">
+              <form action="/" method="post">
+                <div class="form-group">
+                  <input type="email" name="username" class="form-control" placeholder="Email">
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" class="form-control" placeholder="Password">
+                  </div>
+                  <input type="submit" value="Submit">
+                  <!-- <button type="submit" class="btn btn-success">Login</button> -->
+              </form>
+              <button class="btn btn-success"><a href='/createLogin'  class="sign-up">Sign Up</a></button>
+
+            </div>
+
+          </div>
+        </div>
       </div>
-      <div>
-        <label>Password:</label>
-        <input type="password" name="password" />
-      </div>
-      <div>
-        <input type="submit" value="Submit" />
-      </div>
-    </form>
-    <form action='/createLogin' method="get">
-      <button type='submit' value='Create Login'>Create Account</button>
-    </form>
+
+
+        <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   </body>
 </html>

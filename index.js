@@ -1,11 +1,7 @@
 // import { connect } from "tls";
-
 // import { eventNames } from "cluster";
-
 // import { userInfo } from "os";
-
 // import { userInfo } from "os";
-
 // initialize modules
 require('dotenv').config()
 const mustache = require('mustache')
@@ -18,11 +14,9 @@ const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
 const session = require('express-session')
 const { check, validationResult } = require('express-validator')
-
 // const environment = process.env.NODE_ENV || 'development'
 // const dbConfigs = require('./knexfile.js')
 // const db = require('knex')(dbConfigs.development)
-
 // import local modules
 const {
   addUser,
@@ -37,7 +31,6 @@ const {
   updateSenderBalance
   // createNewUserTransactions
 } = require('./src/user-functions.js')
-
 // initialize server, passport, and express session
 app.use(express.static(__dirname))
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -46,39 +39,31 @@ app.use(passport.session())
 app.use(session({
   secret: 'keyboard cat'
 }))
-
 const port = process.env.PORT || 3000
-
 // load templates
 const homepageTemplate = fs.readFileSync('./templates/homepage.html', 'utf8')
 const createUser = fs.readFileSync('./templates/createUser.html', 'utf8')
 const moneySentTemplate = fs.readFileSync('./templates/moneysent.html', 'utf8')
-
 // login page
 app.get('/', (req, res) => res.sendFile('auth.html', { root: __dirname }))
 app.get('/success', (req, res) => res.send('You successfully logged in'))
 app.get('/error', (req, res) => res.send('Username or password is incorrect'))
-
 passport.serializeUser(function (user, cb) {
   cb(null, user)
 })
-
 function createLogin (req, res, next) {
   res.send(createUser)
 }
 app.get('/createLogin', createLogin)
-
 passport.deserializeUser(function (id, cb) {
   User.findById(id, function (err, user) {
     cb(err, user)
   })
 })
-
 // Passport Local Setup
 const strategy = new LocalStrategy({
   username: 'email'
 },
-
 function (email, password, done) {
   findUserByEmail(email)
     .then(function (result) {
@@ -103,21 +88,17 @@ function (email, password, done) {
       return done(err)
     })
 })
-
 passport.use(strategy)
-
 app.post('/',
   passport.authenticate('local', { failureRedirect: '/error' }),
   function (req, res) {
     console.log('username ' + req.user.email + ' logged in')
-
     // create variables that will be passed to HTML
     let userDetails
     const checkingTransactions = []
     const savingsTransactions = []
     let checkingHTML = ''
     let savingsHTML = ''
-
     getBalances(req.user.id)
       // after getting the users balances, the result is set to the userDetails object
       .then((bal) => {
@@ -168,7 +149,6 @@ app.post('/',
       })
   }
 )
-
 app.post('/createUser', [
   // username must be an email
   check('email').isEmail(),
@@ -181,7 +161,6 @@ app.post('/createUser', [
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() })
   }
-
   findUser(req.body.email)
     .then((result) => {
       console.log(result.rows)
@@ -200,27 +179,31 @@ app.post('/createUser', [
       }
     })
 })
-
-app.post('/moneysent', (req, res, next) => {
+app.post('/moneysent', [
+  check('email').isEmail().withMessage('Please enter a valid email'),
+  check('amount').isFloat()
+],
+(req, res, next) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() })
+  }
   // console.log(req.body)
   // console.log('send money to: ' + req.body.email)
   // console.log('amount: ' + req.body.amount)
   // console.log(req.session)
-
   // check for whether amount field is not a number, or blank
   if (isNaN(req.body.amount)) {
     return res.send('Oops! That is not a number.')
   } else if (req.body.amount === '') {
     return res.send("Oops! You didn't enter an amount.")
   }
-
   // create variables that will be passed to HTML
   let userDetails
   const checkingTransactions = []
   const savingsTransactions = []
   let checkingHTML = ''
   let savingsHTML = ''
-
   // sender balance is updated based on user input
   updateSenderBalance(req.session.passport.user.email, req.body.amount, req.body.email)
     // amount is sent to designated user
@@ -279,7 +262,6 @@ app.post('/moneysent', (req, res, next) => {
       }))
     })
 })
-
 // logout button triggers this route, destroying the session
 app.get('/logout', function (req, res) {
   if (req.session) {
@@ -294,7 +276,7 @@ app.get('/logout', function (req, res) {
   // req.logout();
   // res.redirect('/')
 })
-
 app.listen(port, () => {
   console.log('app listening on port ' + port)
 })
+

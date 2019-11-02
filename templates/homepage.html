@@ -5,31 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="homepage.css">
     <title>Bank Hub</title>
 </head>
 <body>
-    <h1>Welcome to Bank Hub!</h1>
 
-    <h2><em>Hello, {{{firstName}}}</em></h2>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">BankHub</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Send Money <span class="sr-only">(current)</span></a>
+                </li>
+                </ul>
+                <a href="/logout"><button class="btn btn-success my-2 my-sm-0">Logout</button></a>
+            </div>
+            </nav>
 
-    <div class="container-fluid">
+    <div class="modal-dialog text-center">
+        <div class="col-sm-9 main-section">
+            <div class="modal-content">
 
-        <p>Search for a another Bank Hub user below to send them money</p>
+    <h2>Hello, {{{firstName}}}</h2>
+    
 
-        <form action="/moneysent" method="post">
-          <div>
-            <label>Search for user email: </label>
-            <input type="text" name="email" />
-      
-            <label>Amount to send: </label>
-            <input tpye="text" name="amount" />
+    <p>
+        <a class="btn btn-primary" id="checkingAccountSelector" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Checking</a>
+        <button class="btn btn-primary" id="savingsAccountSelector" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Savings</button>
+    </p>
 
-            <input type="submit" value="Send" />
-
+      <div class="row">
+        <div class="col">
+          <div class="collapse multi-collapse" id="multiCollapseExample1">
+            <div class="card card-body">
+                <h4>Checking Balance: {{{checkingBalance}}}</h4>
+            </div>
           </div>
-          
-        </form>
+        </div>
+        <div class="col">
+          <div class="collapse multi-collapse" id="multiCollapseExample2">
+            <div class="card card-body">
+              <h4>Savings Balance: {{{savingsBalance}}}</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="accordion" id="accordionExample">
+        <div class="card">
+            <div class="card-header" id="headingTwo">
+                <h2 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    Checking Transactions: 
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseOne" id="checkingTransactions" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div class="card-body">
+                        <ul>
+                            {{{listOfCheckingTransactions}}}
+                        </ul>
+                </div>
+            </div>
+        </div> 
+        <div class="card">
+            <div class="card-header" id="headingTwo">
+                <h2 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Savings Transactions:
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseTwo" id="savingsTransactions" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                <div class="card-body">
+                        <ul>
+                            {{{listOfSavingsTransactions}}}
+                        </ul>
+                </div>
+            </div>
+        </div>        
+      </div>
+     </div>
+    </div>
+<!--  -->
+    <!-- <div class="container">
 
         <h3>Accounts</h3>
 
@@ -56,9 +122,14 @@
             {{{listOfSavingsTransactions}}}
         </ul>
 
-    </div>
-    <a href="/logout">logout</a>
+    </div> -->
 
+    
     <script src="script.js"></script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>
