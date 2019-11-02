@@ -3,26 +3,29 @@
 ___
 ### About
 ![alt text](SMTM.gif)
+
+The purpose of this project was to create a simple app that includes user authentication and forms that interact with a database.
 ___
 
 
 ### Contributors
-###### **Andy Nguyen**
-- Github /Initial structure
-- Postgres setup and login
+###### [**Andy Nguyen**](https://github.com/apnguyen11)
+- Github & initial structure
 - User authentication
 - Travis CI
+- Form validation
 
 
-###### **Joey Killam**
-- Express Initial setup
-- Bootstrap
-- Form Validation
+###### [**Joey Killam**](https://github.com/jhkillam)
+- Express initial setup
+- Knex migration & seed files
+- User homepage rendering from PostgreSQL database
 
-###### **Robert Foreman**
+
+###### [**Robert Foreman**](https://github.com/RobertForeman88)
 - ReadMe
-- Fake Data
-- Form Validation
+- Fake data
+- Form validation
 - CSS/Bootstrap
 
 ___
@@ -32,9 +35,9 @@ ___
 - [Knex](http://knexjs.org/) -
 - [PassportJS](http://www.passportjs.org/) -
 - [Faker](https://www.npmjs.com/package/faker) -
-- [Postgres](https://www.postgresql.org/) -
-
-
+- [PostgreSQL](https://www.postgresql.org/) -
+- [bcrypt](https://www.npmjs.com/package/bcrypt) - 
+- [Mustache](https://mustache.github.io/) -
 
 ___ 
 
