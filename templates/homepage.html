@@ -21,9 +21,6 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Send Money <span class="sr-only">(current)</span></a>
-                </li>
                 </ul>
                 <a href="/logout"><button class="btn btn-success my-2 my-sm-0">Logout</button></a>
             </div>
@@ -38,7 +35,46 @@
 
     <p>
         <a class="btn btn-primary" id="checkingAccountSelector" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Checking</a>
+
         <button class="btn btn-primary" id="savingsAccountSelector" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Savings</button>
+
+        <!-- Button trigger modal -->
+        
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalScrollable">
+            Transfer Money
+        </button>
+        
+        <div>
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Send Money</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <form action="/moneysent" method="post">
+                                <div class="d-flex flex-column">
+                                <label>Recipient email: </label>
+                                <input type="text" name="email" />
+                                <label>Amount: </label>
+                                <input tpye="text" name="amount" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <input type="submit" value="Send" class="btn btn-primary"/>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
     </p>
 
       <div class="row">
