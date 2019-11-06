@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="moneysent.css">
+    <title>Bank Hub</title>
+</head>
+<body>
+    <div class="container card">
+
+      <h1>Welcome to BankHub!</h1>
+      <h2> <em>Hello, {{{firstName}}}</em> </h2>
+      <div style="padding-bottom: 1em;">
+        <a href="/logout"><button class="btn btn-primary">Log out</button></a><br/>
+
+    </div>
+    <div>
+      <p>
+        
+          <button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">Accounts</button>
+        </p>
+        <div class="row">
+          <div class="col">
+            <div class="collapse multi-collapse" id="multiCollapseExample1">
+              <div class="card card-body ">
+                  <li>Checking Balance: {{{checkingBalance}}} <button id="checkingAccountSelector">View Transactions</button></li>
+                  <ul id="checkingTransactions">
+                      {{{listOfCheckingTransactions}}}
+                  </ul> 
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="collapse multi-collapse" id="multiCollapseExample2">
+              <div class="card card-body">
+                  <li>Savings Balance: {{{savingsBalance}}} <button id="savingsAccountSelector">View Transactions</button></li>
+
+                  <ul id="savingsTransactions">
+                      {{{listOfSavingsTransactions}}}
+                  </ul>
+                  
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+        <p>Search for a another Bank Hub user below to send them money</p>
+        <div>
+          <form action="/moneysent" method="post">
+            <div>
+              <label>Search for user email: </label>
+              <input type="text" name="email" />
+        
+              <label>Amount to send: </label>
+              <input tpye="text" name="amount" />
+
+              <input type="submit" value="Send" />
+
+            </div>
+            
+          </form>
+        </div>
+    </div>
+        <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+</body>
+</html>
