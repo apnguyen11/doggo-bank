@@ -4,7 +4,32 @@ body {
 }
 
 .main-section {
-  margin: 0 auto;
+  margin: 1.75rem auto;
   margin-top: 130px;
-  padding: 0;
+  padding: 0px 20px;
+  max-width: 650px;
+  text-align: center
+}
+
+.content-area {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  width: 100%;
+  pointer-events: auto;
+  background-color:
+  #fff;
+  background-clip: padding-box;
+  border: 1px solid
+  rgba(0,0,0,.2);
+  border-radius: .3rem;
+  outline: 0;
+  overflow-wrap: break-word;
+  padding-top: 5px;
+}
+
+.transaction-area {
+  text-align: left;
 }
