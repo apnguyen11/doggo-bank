@@ -37,7 +37,14 @@
     <p>
         <a class="btn btn-primary" id="checkingAccountSelector" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Checking</a>
         <button class="btn btn-primary" id="savingsAccountSelector" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Savings</button>
+    <!-- Button trigger modal -->
+        
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalScrollable">
+        Transfer Money
+    </button>
     </p>
+    <div>
+    <!-- Modal -->
 
       <div class="row">
         <div class="col">
@@ -56,59 +63,8 @@
         </div>
       </div>
 
-    <div class="accordion" id="accordionExample">
-        <div class="card">
-            <div class="card-header" id="headingTwo">
-                <h2 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                    Checking Transactions: 
-                    </button>
-                </h2>
-            </div>
-            <div id="collapseOne" id="checkingTransactions" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                <div class="card-body">
-                        <ul>
-                            {{{listOfCheckingTransactions}}}
-                        </ul>
-                </div>
-            </div>
-        </div> 
-        <div class="card">
-            <div class="card-header" id="headingTwo">
-                <h2 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    Savings Transactions:
-                    </button>
-                </h2>
-            </div>
-            <div id="collapseTwo" id="savingsTransactions" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                <div class="card-body">
-                        <ul>
-                            {{{listOfSavingsTransactions}}}
-                        </ul>
-                </div>
-            </div>
-        </div>        
-      </div>
-     </div>
-    </div>
-<!--  -->
-    <!-- <div class="container">
 
-            <h2>Hello, {{{firstName}}}</h2>
-
-            <p><a class="btn btn-primary" id="checkingAccountSelector" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Checking</a>
-
-            <button class="btn btn-primary" id="savingsAccountSelector" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Savings</button>
-
-            <!-- Button trigger modal -->
-        
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalScrollable">
-                Transfer Money
-            </button>
-            </p>
-            <div>
-            <!-- Modal -->
+            
                 <div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-scrollable" role="document">
                         <div class="modal-content">
