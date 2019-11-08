@@ -209,7 +209,7 @@ app.post('/moneysent', [
         res.end('User not found!')
       }
     })
-  
+
   let userDetails
   getBalances(req.session.passport.user.id)
     // after getting the users balances, the result is set to the userDetails object
@@ -305,4 +305,3 @@ app.get('/logout', function (req, res) {
 app.listen(port, () => {
   console.log('app listening on port ' + port)
 })
-
