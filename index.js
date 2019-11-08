@@ -164,7 +164,7 @@ app.post('/createUser', [
   findUser(req.body.email)
     .then((result) => {
       console.log(result.rows)
-      
+
       if (result.rows.length >= 1) {
         res.send('There is already a user with this email! <a <h1 href="/">Go Home</a></h1>')
       } else {
@@ -194,12 +194,38 @@ app.post('/moneysent', [
   // console.log(req.session)
   // check for whether amount field is not a number, or blank
   if (isNaN(req.body.amount)) {
-    return res.send('Oops! That is not a number.')
-  } else if (req.body.amount === '') {
-    return res.send("Oops! You didn't enter an amount.")
+    return res.end('Oops! That is not a number.')
   }
-  // create variables that will be passed to HTML
+  if (req.body.amount === '') {
+    return res.end("Oops! You didn't enter an amount.")
+  }
+  if (req.body.amount < 0) {
+    return res.end("Oops! You can't send negative money! Nice try!")
+  }
+
+  findUser(req.body.email)
+    .then((results) => {
+      if (results.rows.length < 1) {
+        res.end('User not found!')
+      }
+    })
+  
   let userDetails
+  getBalances(req.session.passport.user.id)
+    // after getting the users balances, the result is set to the userDetails object
+    .then((bal) => {
+      console.log(bal)
+      userDetails = {
+        chkBal: bal[0].checkingBal,
+        savBal: bal[0].savingsBal,
+        acctId: bal[0].id
+      }
+      if ((userDetails.chkBal - req.body.amount) < 0) {
+        res.end("Oops! Your checking account doesn't have enough cash to send that amount!")
+      }
+    })
+
+  // create variables that will be passed to HTML
   const checkingTransactions = []
   const savingsTransactions = []
   let checkingHTML = ''
@@ -255,7 +281,7 @@ app.post('/moneysent', [
     })
     .catch((err) => {
       console.log(err)
-      res.send(mustache.render(homepageTemplate, {
+      res.send(mustache.render(moneySentTemplate, {
         firstName: req.session.passport.user.firstName,
         checkingBalance: 'Error loading accounts',
         savingsBalance: 'Error loading accounts'
