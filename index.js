@@ -179,41 +179,42 @@ app.post('/createUser', [
       }
     })
 })
-app.post('/moneysent', [
-  check('email').isEmail().withMessage('Please enter a valid email'),
-  check('amount').isFloat()
-],
-(req, res, next) => {
+app.post('/moneysent', (req, res, next) => {
   const errors = validationResult(req)
+  let flag = 0
   if (!errors.isEmpty()) {
+    flag++
     return res.status(422).json({ errors: errors.array() })
-  }
-  // console.log(req.body)
-  // console.log('send money to: ' + req.body.email)
-  // console.log('amount: ' + req.body.amount)
-  // console.log(req.session)
-  // check for whether amount field is not a number, or blank
-  if (isNaN(req.body.amount)) {
+  } else if (isNaN(req.body.amount)) {
+    flag++
     return res.end('Oops! That is not a number.')
-  }
-  if (req.body.amount === '') {
+  } else if (req.body.amount === '') {
+    flag++
     return res.end("Oops! You didn't enter an amount.")
-  }
-  if (req.body.amount < 0) {
+  } else if (req.body.amount < 0) {
+    flag++
     return res.end("Oops! You can't send negative money! Nice try!")
   }
+
+  // create variables that will be passed to HTML
+  const checkingTransactions = []
+  const savingsTransactions = []
+  let checkingHTML = ''
+  let savingsHTML = ''
+  let userDetails
 
   findUser(req.body.email)
     .then((results) => {
       if (results.rows.length < 1) {
-        res.end('User not found!')
+        flag++
+        return res.end('User not found!')
       }
     })
-
-  let userDetails
-  getBalances(req.session.passport.user.id)
-    // after getting the users balances, the result is set to the userDetails object
+    .then(() => {
+      return getBalances(req.session.passport.user.id)
+    })
     .then((bal) => {
+      // after getting the users balances, the result is set to the userDetails object
       console.log(bal)
       userDetails = {
         chkBal: bal[0].checkingBal,
@@ -221,27 +222,39 @@ app.post('/moneysent', [
         acctId: bal[0].id
       }
       if ((userDetails.chkBal - req.body.amount) < 0) {
-        res.end("Oops! Your checking account doesn't have enough cash to send that amount!")
+        flag++
+        return res.end("Oops! Your checking account doesn't have enough cash to send that amount!")
       }
     })
-
-  // create variables that will be passed to HTML
-  const checkingTransactions = []
-  const savingsTransactions = []
-  let checkingHTML = ''
-  let savingsHTML = ''
-  // sender balance is updated based on user input
-  updateSenderBalance(req.session.passport.user.email, req.body.amount, req.body.email)
-    // amount is sent to designated user
     .then(() => {
-      return sendMoney(req.body.email, req.body.amount, req.session.passport.user.email)
+      if (flag === 0) {
+        // sender balance is updated based on user input
+        return updateSenderBalance(req.session.passport.user.email, req.body.amount, req.body.email)
+      } else {
+        flag++
+        return res.end('An error occured')
+      }
+    })
+    .then(() => {
+      if (flag === 0) {
+        // amount is sent to designated user
+        return sendMoney(req.body.email, req.body.amount, req.session.passport.user.email)
+      } else {
+        flag++
+        return res.end('An error occured')
+      }
     })
     // new user balance is retrieved
     .then(() => {
-      return getBalances(req.session.passport.user.id)
+      if (flag === 0) {
+        return getBalances(req.session.passport.user.id)
+      } else {
+        flag++
+        return res.end('An error occured')
+      }
     })
-    // after getting the users balances, the result is set to the userDetails object
     .then((bal) => {
+    // after getting the users balances, the result is set to the userDetails object
       userDetails = {
         chkBal: bal[0].checkingBal,
         savBal: bal[0].savingsBal,
@@ -249,12 +262,12 @@ app.post('/moneysent', [
       }
       return userDetails
     })
-    // the user acctId is used to get their transactions
     .then((userDetails) => {
+      // the user acctId is used to get their transactions
       return getTransactions(userDetails.acctId)
     })
-    // transactions are pushed to an array
     .then((transactions) => {
+      // transactions are pushed to an array
       console.log('finished checking for transactions')
       transactions.forEach(element => {
         if (element.accountType === 'Checking') {
@@ -267,8 +280,8 @@ app.post('/moneysent', [
       checkingHTML = checkingTransactions.map(renderChecking).join('')
       savingsHTML = savingsTransactions.map(renderSavings).join('')
     })
-    // now that all the data has been gathered, it can be sent to the browser
     .then(() => {
+      // now that all the data has been gathered, it can be sent to the browser
       res.send(mustache.render(moneySentTemplate, {
         firstName: req.session.passport.user.firstName,
         amountSent: req.body.amount,
@@ -288,6 +301,7 @@ app.post('/moneysent', [
       }))
     })
 })
+
 // logout button triggers this route, destroying the session
 app.get('/logout', function (req, res) {
   if (req.session) {
