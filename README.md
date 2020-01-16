@@ -25,7 +25,6 @@ ___
 ###### [**Robert Foreman**](https://github.com/RobertForeman88)
 - ReadMe
 - Fake data
-- Form validation
 - CSS/Bootstrap
 
 ___
